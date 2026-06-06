@@ -50,10 +50,9 @@ function EmployeesPage() {
   const [editTarget, setEditTarget] = useState<Employee | null>(null);
   const [resetTarget, setResetTarget] = useState<Employee | null>(null);
 
-  if (role && role !== "admin") {
-    navigate({ to: "/dashboard", replace: true });
-    return null;
-  }
+  useEffect(() => {
+    if (role && role !== "admin") navigate({ to: "/dashboard", replace: true });
+  }, [role, navigate]);
 
   const { data: employees, isLoading } = useQuery({
     queryKey: ["employees"],
