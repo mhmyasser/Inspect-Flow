@@ -16,6 +16,7 @@ import { Route as AuthenticatedMyTasksRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedEmployeesRouteImport } from './routes/_authenticated/employees'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedProjectsIndexRouteImport } from './routes/_authenticated/projects/index'
+import { Route as AuthenticatedTasksTaskIdRouteImport } from './routes/_authenticated/tasks/$taskId'
 import { Route as AuthenticatedProjectsNewRouteImport } from './routes/_authenticated/projects/new'
 import { Route as AuthenticatedProjectsProjectIdRouteImport } from './routes/_authenticated/projects/$projectId'
 import { Route as ApiPublicSetupBootstrapAdminRouteImport } from './routes/api/public/setup/bootstrap-admin'
@@ -56,6 +57,12 @@ const AuthenticatedProjectsIndexRoute =
     path: '/projects/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedTasksTaskIdRoute =
+  AuthenticatedTasksTaskIdRouteImport.update({
+    id: '/tasks/$taskId',
+    path: '/tasks/$taskId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedProjectsNewRoute =
   AuthenticatedProjectsNewRouteImport.update({
     id: '/projects/new',
@@ -89,6 +96,7 @@ export interface FileRoutesByFullPath {
   '/my-tasks': typeof AuthenticatedMyTasksRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRoute
   '/projects/new': typeof AuthenticatedProjectsNewRoute
+  '/tasks/$taskId': typeof AuthenticatedTasksTaskIdRoute
   '/projects/': typeof AuthenticatedProjectsIndexRoute
   '/api/public/setup/admin-exists': typeof ApiPublicSetupAdminExistsRoute
   '/api/public/setup/bootstrap-admin': typeof ApiPublicSetupBootstrapAdminRoute
@@ -101,6 +109,7 @@ export interface FileRoutesByTo {
   '/my-tasks': typeof AuthenticatedMyTasksRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRoute
   '/projects/new': typeof AuthenticatedProjectsNewRoute
+  '/tasks/$taskId': typeof AuthenticatedTasksTaskIdRoute
   '/projects': typeof AuthenticatedProjectsIndexRoute
   '/api/public/setup/admin-exists': typeof ApiPublicSetupAdminExistsRoute
   '/api/public/setup/bootstrap-admin': typeof ApiPublicSetupBootstrapAdminRoute
@@ -115,6 +124,7 @@ export interface FileRoutesById {
   '/_authenticated/my-tasks': typeof AuthenticatedMyTasksRoute
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRoute
   '/_authenticated/projects/new': typeof AuthenticatedProjectsNewRoute
+  '/_authenticated/tasks/$taskId': typeof AuthenticatedTasksTaskIdRoute
   '/_authenticated/projects/': typeof AuthenticatedProjectsIndexRoute
   '/api/public/setup/admin-exists': typeof ApiPublicSetupAdminExistsRoute
   '/api/public/setup/bootstrap-admin': typeof ApiPublicSetupBootstrapAdminRoute
@@ -129,6 +139,7 @@ export interface FileRouteTypes {
     | '/my-tasks'
     | '/projects/$projectId'
     | '/projects/new'
+    | '/tasks/$taskId'
     | '/projects/'
     | '/api/public/setup/admin-exists'
     | '/api/public/setup/bootstrap-admin'
@@ -141,6 +152,7 @@ export interface FileRouteTypes {
     | '/my-tasks'
     | '/projects/$projectId'
     | '/projects/new'
+    | '/tasks/$taskId'
     | '/projects'
     | '/api/public/setup/admin-exists'
     | '/api/public/setup/bootstrap-admin'
@@ -154,6 +166,7 @@ export interface FileRouteTypes {
     | '/_authenticated/my-tasks'
     | '/_authenticated/projects/$projectId'
     | '/_authenticated/projects/new'
+    | '/_authenticated/tasks/$taskId'
     | '/_authenticated/projects/'
     | '/api/public/setup/admin-exists'
     | '/api/public/setup/bootstrap-admin'
@@ -218,6 +231,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProjectsIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/tasks/$taskId': {
+      id: '/_authenticated/tasks/$taskId'
+      path: '/tasks/$taskId'
+      fullPath: '/tasks/$taskId'
+      preLoaderRoute: typeof AuthenticatedTasksTaskIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/projects/new': {
       id: '/_authenticated/projects/new'
       path: '/projects/new'
@@ -255,6 +275,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedMyTasksRoute: typeof AuthenticatedMyTasksRoute
   AuthenticatedProjectsProjectIdRoute: typeof AuthenticatedProjectsProjectIdRoute
   AuthenticatedProjectsNewRoute: typeof AuthenticatedProjectsNewRoute
+  AuthenticatedTasksTaskIdRoute: typeof AuthenticatedTasksTaskIdRoute
   AuthenticatedProjectsIndexRoute: typeof AuthenticatedProjectsIndexRoute
 }
 
@@ -264,6 +285,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedMyTasksRoute: AuthenticatedMyTasksRoute,
   AuthenticatedProjectsProjectIdRoute: AuthenticatedProjectsProjectIdRoute,
   AuthenticatedProjectsNewRoute: AuthenticatedProjectsNewRoute,
+  AuthenticatedTasksTaskIdRoute: AuthenticatedTasksTaskIdRoute,
   AuthenticatedProjectsIndexRoute: AuthenticatedProjectsIndexRoute,
 }
 
