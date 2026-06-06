@@ -168,7 +168,7 @@ function ProjectDetailPage() {
                           <div>
                             <div className="text-sm font-medium">{t.title}</div>
                             <div className="text-xs text-muted-foreground">
-                              {(t.profiles as { full_name: string } | null)?.full_name ?? "غير مسند"}
+                              {t.assignee_name ?? "غير مسند"}
                             </div>
                           </div>
                           <TaskStatusBadge status={t.status} />
