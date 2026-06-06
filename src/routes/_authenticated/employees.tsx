@@ -23,6 +23,8 @@ import { toast } from "sonner";
 import { Plus, Pencil, Trash2, KeyRound, Loader2, Search } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 
+import { useEffect } from "react";
+
 export const Route = createFileRoute("/_authenticated/employees")({
   component: EmployeesPage,
 });
