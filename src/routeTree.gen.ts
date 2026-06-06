@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as ApiPublicSetupBootstrapAdminRouteImport } from './routes/api/public/setup/bootstrap-admin'
+import { Route as ApiPublicSetupAdminExistsRouteImport } from './routes/api/public/setup/admin-exists'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -40,17 +41,25 @@ const ApiPublicSetupBootstrapAdminRoute =
     path: '/api/public/setup/bootstrap-admin',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicSetupAdminExistsRoute =
+  ApiPublicSetupAdminExistsRouteImport.update({
+    id: '/api/public/setup/admin-exists',
+    path: '/api/public/setup/admin-exists',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/api/public/setup/admin-exists': typeof ApiPublicSetupAdminExistsRoute
   '/api/public/setup/bootstrap-admin': typeof ApiPublicSetupBootstrapAdminRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/api/public/setup/admin-exists': typeof ApiPublicSetupAdminExistsRoute
   '/api/public/setup/bootstrap-admin': typeof ApiPublicSetupBootstrapAdminRoute
 }
 export interface FileRoutesById {
@@ -59,19 +68,31 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/api/public/setup/admin-exists': typeof ApiPublicSetupAdminExistsRoute
   '/api/public/setup/bootstrap-admin': typeof ApiPublicSetupBootstrapAdminRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/dashboard' | '/api/public/setup/bootstrap-admin'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/api/public/setup/admin-exists'
+    | '/api/public/setup/bootstrap-admin'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/dashboard' | '/api/public/setup/bootstrap-admin'
+  to:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/api/public/setup/admin-exists'
+    | '/api/public/setup/bootstrap-admin'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/dashboard'
+    | '/api/public/setup/admin-exists'
     | '/api/public/setup/bootstrap-admin'
   fileRoutesById: FileRoutesById
 }
@@ -79,6 +100,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  ApiPublicSetupAdminExistsRoute: typeof ApiPublicSetupAdminExistsRoute
   ApiPublicSetupBootstrapAdminRoute: typeof ApiPublicSetupBootstrapAdminRoute
 }
 
@@ -119,6 +141,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicSetupBootstrapAdminRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/setup/admin-exists': {
+      id: '/api/public/setup/admin-exists'
+      path: '/api/public/setup/admin-exists'
+      fullPath: '/api/public/setup/admin-exists'
+      preLoaderRoute: typeof ApiPublicSetupAdminExistsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -137,6 +166,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  ApiPublicSetupAdminExistsRoute: ApiPublicSetupAdminExistsRoute,
   ApiPublicSetupBootstrapAdminRoute: ApiPublicSetupBootstrapAdminRoute,
 }
 export const routeTree = rootRouteImport
