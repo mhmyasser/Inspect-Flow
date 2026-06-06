@@ -5,7 +5,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { updateProject, updateStageStatus } from "@/lib/projects.functions";
-import { createTask, reassignTask } from "@/lib/tasks.functions";
+import { createTask } from "@/lib/tasks.functions";
 import { listEmployees } from "@/lib/employees.functions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
