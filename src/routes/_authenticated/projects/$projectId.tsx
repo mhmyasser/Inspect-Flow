@@ -220,7 +220,7 @@ function ProjectDetailPage() {
                     <div className="flex-1">
                       <div className="text-sm font-medium">{translateAction(l.action)}</div>
                       <div className="text-xs text-muted-foreground">
-                        {(l.profiles as { full_name: string } | null)?.full_name ?? "النظام"}
+                        {l.actor_name ?? "النظام"}
                         {l.details && typeof l.details === "object" && " — " + JSON.stringify(l.details, null, 0).replace(/[{}"]/g, "").replace(/,/g, "، ")}
                       </div>
                     </div>
