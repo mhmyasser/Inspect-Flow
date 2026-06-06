@@ -54,10 +54,14 @@ function ProjectDetailPage() {
     queryFn: async () => {
       const stageIds = stages!.map((s) => s.id);
       const { data, error } = await supabase
-        .from("tasks").select("*, profiles!tasks_assignee_id_fkey(full_name)")
-        .in("stage_id", stageIds).order("created_at");
+        .from("tasks").select("*").in("stage_id", stageIds).order("created_at");
       if (error) throw error;
-      return data;
+      const assigneeIds = Array.from(new Set(data.map((t) => t.assignee_id).filter((x): x is string => !!x)));
+      const { data: profiles } = assigneeIds.length
+        ? await supabase.from("profiles").select("id, full_name").in("id", assigneeIds)
+        : { data: [] as { id: string; full_name: string }[] };
+      const map = new Map((profiles ?? []).map((p) => [p.id, p.full_name]));
+      return data.map((t) => ({ ...t, assignee_name: t.assignee_id ? map.get(t.assignee_id) ?? null : null }));
     },
   });
 
@@ -66,10 +70,15 @@ function ProjectDetailPage() {
     enabled: isAdmin,
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("project_logs").select("*, profiles(full_name)")
+        .from("project_logs").select("*")
         .eq("project_id", projectId).order("created_at", { ascending: false }).limit(50);
       if (error) throw error;
-      return data;
+      const actorIds = Array.from(new Set(data.map((l) => l.actor_id).filter((x): x is string => !!x)));
+      const { data: profiles } = actorIds.length
+        ? await supabase.from("profiles").select("id, full_name").in("id", actorIds)
+        : { data: [] as { id: string; full_name: string }[] };
+      const map = new Map((profiles ?? []).map((p) => [p.id, p.full_name]));
+      return data.map((l) => ({ ...l, actor_name: l.actor_id ? map.get(l.actor_id) ?? null : null }));
     },
   });
 
