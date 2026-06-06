@@ -111,10 +111,10 @@ export const updateStageStatus = createServerFn({ method: "POST" })
     const { data: isAdmin } = await context.supabase.rpc("is_admin", { _user_id: context.userId });
     if (!isAdmin) throw new Error("صلاحيات غير كافية");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const update: Record<string, unknown> = { status: data.status };
-    if (data.status === "completed") update.completed_at = new Date().toISOString();
+    const completedAt = data.status === "completed" ? new Date().toISOString() : null;
     const { data: stage, error } = await supabaseAdmin.from("project_stages")
-      .update(update).eq("id", data.stageId).select("project_id, name").single();
+      .update({ status: data.status, completed_at: completedAt })
+      .eq("id", data.stageId).select("project_id, name").single();
     if (error) throw new Error(error.message);
     await supabaseAdmin.from("project_logs").insert({
       project_id: stage.project_id, actor_id: context.userId, action: "stage_status_changed",
