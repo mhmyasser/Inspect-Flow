@@ -1,21 +1,16 @@
 # Routes
 
-TanStack Start uses **file-based routing**. Every `.tsx` file in this directory
-is a route. Do **not** create `src/pages/`, `src/routes/_app/index.tsx`, or
-`app/layout.tsx` — those are Next.js / Remix conventions. The only root layout
-is `src/routes/__root.tsx`.
+This folder uses TanStack Router file-based routing. Routes:
 
-## Conventions
-
-| File | URL |
-| --- | --- |
-| `index.tsx` | `/` |
-| `about.tsx` | `/about` |
-| `users/index.tsx` | `/users` |
-| `users/$id.tsx` | `/users/:id` (dynamic — bare `$`, no curly braces) |
-| `posts/{-$category}.tsx` | `/posts/:category?` (optional segment) |
-| `files/$.tsx` | `/files/*` (splat — read via `_splat` param, never `*`) |
-| `_layout.tsx` | layout route (renders children via `<Outlet />`) |
-| `__root.tsx` | app shell — wraps every page; preserve `<Outlet />` |
-
-`routeTree.gen.ts` is auto-generated. Don't edit it by hand.
+- `index.tsx` — splash/redirect (auth → dashboard, anon → /auth)
+- `auth.tsx` — login + first-admin bootstrap
+- `_authenticated/route.tsx` — auth gate layout (ssr off)
+- `_authenticated/dashboard.tsx` — main dashboard
+- `_authenticated/projects/` — projects list, detail, new
+- `_authenticated/tasks/$taskId.tsx` — task detail
+- `_authenticated/employees.tsx` — admin: employee CRUD
+- `_authenticated/templates.tsx` — admin: workflow template CRUD
+- `_authenticated/my-tasks.tsx` — employee tasks view
+- `_authenticated/settings.tsx` — personal settings
+- `api/public/setup/` — first-admin bootstrap endpoints
+- `api/public/notifications/dispatch.ts` — cron-triggered notification dispatcher
