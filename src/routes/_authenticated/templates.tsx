@@ -39,10 +39,9 @@ interface StageDraft {
 function TemplatesPage() {
   const { role } = useAuth();
   const navigate = useNavigate();
-  if (role && role !== "admin") {
-    navigate({ to: "/dashboard", replace: true });
-    return null;
-  }
+  useEffect(() => {
+    if (role && role !== "admin") navigate({ to: "/dashboard", replace: true });
+  }, [role, navigate]);
   const qc = useQueryClient();
   const del = useServerFn(deleteTemplate);
   const [editing, setEditing] = useState<{ id?: string; name: string; description: string; projectType: "tender" | "direct"; stages: StageDraft[] } | null>(null);
