@@ -191,7 +191,7 @@ function ProjectDetailPage() {
                   <div>
                     <div className="font-medium">{t.title}</div>
                     <div className="text-xs text-muted-foreground">
-                      مسند إلى: {(t.profiles as { full_name: string } | null)?.full_name ?? "—"}
+                      مسند إلى: {t.assignee_name ?? "—"}
                       {t.deadline && ` • ${new Date(t.deadline).toLocaleDateString("ar-EG")}`}
                     </div>
                   </div>
