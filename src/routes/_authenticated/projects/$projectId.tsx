@@ -169,8 +169,10 @@ function ProjectDetailPage() {
                       <div className="flex items-center gap-2">
                         <StageStatusSelect stage={stage} />
                         <AddTaskDialog stageId={stage.id} stageName={stage.name} projectId={projectId} />
+                        <DeleteStageButton stageId={stage.id} stageName={stage.name} projectId={projectId} />
                       </div>
                     )}
+
                   </div>
                   {stageTasks.length > 0 && (
                     <div className="mt-4 space-y-2 ps-9">
