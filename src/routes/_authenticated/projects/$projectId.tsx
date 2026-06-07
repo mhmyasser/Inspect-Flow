@@ -507,8 +507,176 @@ function translateAction(action: string): string {
     project_created: "تم إنشاء المشروع",
     project_updated: "تم تحديث المشروع",
     stage_status_changed: "تم تغيير حالة مرحلة",
+    stage_added: "تم إضافة مرحلة",
+    stage_deleted: "تم حذف مرحلة",
+    template_applied: "تم تطبيق قالب",
     task_assigned: "تم إسناد مهمة",
     task_status_changed: "تم تغيير حالة مهمة",
   };
   return map[action] ?? action;
 }
+
+function AddStageDialog({ projectId }: { projectId: string }) {
+  const [open, setOpen] = useState(false);
+  const [form, setForm] = useState({
+    name: "", description: "",
+    stageType: "progress" as "progress" | "informational",
+    expectedDays: 3, deadline: "",
+    requiresAttachments: false, requiresFinancial: false,
+  });
+  const add = useServerFn(addProjectStage);
+  const qc = useQueryClient();
+  const m = useMutation({
+    mutationFn: () => add({ data: {
+      projectId, name: form.name,
+      description: form.description || null,
+      stageType: form.stageType,
+      expectedDays: form.expectedDays,
+      deadline: form.deadline ? new Date(form.deadline).toISOString() : null,
+      requiresAttachments: form.requiresAttachments,
+      requiresFinancial: form.requiresFinancial,
+    }}),
+    onSuccess: () => {
+      toast.success("تم إضافة المرحلة");
+      qc.invalidateQueries({ queryKey: ["project-stages", projectId] });
+      setOpen(false);
+      setForm({ name: "", description: "", stageType: "progress", expectedDays: 3, deadline: "", requiresAttachments: false, requiresFinancial: false });
+    },
+    onError: (err: Error) => toast.error(err.message),
+  });
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button size="sm"><Plus className="ms-2 h-4 w-4" /> إضافة مرحلة</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader><DialogTitle>إضافة مرحلة جديدة</DialogTitle></DialogHeader>
+        <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); m.mutate(); }}>
+          <div className="space-y-2">
+            <Label>اسم المرحلة</Label>
+            <Input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+          </div>
+          <div className="space-y-2">
+            <Label>الوصف</Label>
+            <Textarea rows={2} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>النوع</Label>
+              <Select value={form.stageType} onValueChange={(v: "progress" | "informational") => setForm({ ...form, stageType: v })}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="progress">مرحلة تقدم</SelectItem>
+                  <SelectItem value="informational">معلوماتية</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>المدة المتوقعة (أيام)</Label>
+              <Input type="number" min={1} value={form.expectedDays}
+                onChange={(e) => setForm({ ...form, expectedDays: parseInt(e.target.value) || 1 })} />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label>الموعد النهائي (اختياري)</Label>
+            <Input type="datetime-local" value={form.deadline} onChange={(e) => setForm({ ...form, deadline: e.target.value })} />
+          </div>
+          <div className="flex items-center justify-between">
+            <Label>تتطلب مرفقات</Label>
+            <Switch checked={form.requiresAttachments} onCheckedChange={(c) => setForm({ ...form, requiresAttachments: c })} />
+          </div>
+          <div className="flex items-center justify-between">
+            <Label>تتطلب بيانات مالية</Label>
+            <Switch checked={form.requiresFinancial} onCheckedChange={(c) => setForm({ ...form, requiresFinancial: c })} />
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setOpen(false)}>إلغاء</Button>
+            <Button type="submit" disabled={m.isPending}>
+              {m.isPending && <Loader2 className="ms-2 h-4 w-4 animate-spin" />}
+              إضافة
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function ApplyTemplateDialog({ projectId, projectType }: { projectId: string; projectType: "tender" | "direct" }) {
+  const [open, setOpen] = useState(false);
+  const [templateId, setTemplateId] = useState("");
+  const apply = useServerFn(applyTemplateToProject);
+  const qc = useQueryClient();
+  const { data: templates } = useQuery({
+    queryKey: ["templates", projectType],
+    enabled: open,
+    queryFn: async () => {
+      const { data, error } = await supabase.from("workflow_templates")
+        .select("id, name, is_default").eq("project_type", projectType).order("is_default", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+  const m = useMutation({
+    mutationFn: () => apply({ data: { projectId, templateId } }),
+    onSuccess: () => {
+      toast.success("تم تطبيق القالب");
+      qc.invalidateQueries({ queryKey: ["project-stages", projectId] });
+      setOpen(false); setTemplateId("");
+    },
+    onError: (err: Error) => toast.error(err.message),
+  });
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button size="sm" variant="outline"><LayoutTemplate className="ms-2 h-4 w-4" /> تطبيق قالب</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader><DialogTitle>تطبيق قالب مراحل</DialogTitle></DialogHeader>
+        <div className="space-y-4">
+          <p className="text-sm text-muted-foreground">سيتم إضافة مراحل القالب إلى المشروع (لا تستبدل المراحل الموجودة).</p>
+          <div className="space-y-2">
+            <Label>القالب</Label>
+            <Select value={templateId} onValueChange={setTemplateId}>
+              <SelectTrigger><SelectValue placeholder="اختر قالب" /></SelectTrigger>
+              <SelectContent>
+                {templates?.map((t) => (
+                  <SelectItem key={t.id} value={t.id}>{t.name}{t.is_default ? " (افتراضي)" : ""}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setOpen(false)}>إلغاء</Button>
+            <Button onClick={() => m.mutate()} disabled={!templateId || m.isPending}>
+              {m.isPending && <Loader2 className="ms-2 h-4 w-4 animate-spin" />}
+              تطبيق
+            </Button>
+          </DialogFooter>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function DeleteStageButton({ stageId, stageName, projectId }: { stageId: string; stageName: string; projectId: string }) {
+  const del = useServerFn(deleteProjectStage);
+  const qc = useQueryClient();
+  const m = useMutation({
+    mutationFn: () => del({ data: { stageId } }),
+    onSuccess: () => {
+      toast.success("تم حذف المرحلة");
+      qc.invalidateQueries({ queryKey: ["project-stages", projectId] });
+      qc.invalidateQueries({ queryKey: ["project-tasks", projectId] });
+    },
+    onError: (err: Error) => toast.error(err.message),
+  });
+  return (
+    <Button size="icon" variant="ghost" className="h-8 w-8 text-destructive"
+      onClick={() => { if (confirm(`حذف المرحلة "${stageName}" وكل مهامها؟`)) m.mutate(); }}
+      disabled={m.isPending}>
+      <Trash2 className="h-4 w-4" />
+    </Button>
+  );
+}
+
