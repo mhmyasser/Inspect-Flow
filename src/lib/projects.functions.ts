@@ -122,3 +122,112 @@ export const updateStageStatus = createServerFn({ method: "POST" })
     });
     return { ok: true };
   });
+
+export const addProjectStage = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({
+    projectId: z.string().uuid(),
+    name: z.string().min(1).max(200),
+    description: z.string().max(2000).optional().nullable(),
+    stageType: z.enum(["progress", "informational"]).default("progress"),
+    expectedDays: z.number().int().min(1).max(365).default(3),
+    deadline: z.string().optional().nullable(),
+    requiresAttachments: z.boolean().default(false),
+    requiresFinancial: z.boolean().default(false),
+  }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { data: isAdmin } = await context.supabase.rpc("is_admin", { _user_id: context.userId });
+    if (!isAdmin) throw new Error("صلاحيات غير كافية");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: maxRow } = await supabaseAdmin.from("project_stages")
+      .select("order_index").eq("project_id", data.projectId)
+      .order("order_index", { ascending: false }).limit(1).maybeSingle();
+    const nextIdx = (maxRow?.order_index ?? 0) + 1;
+    const { error } = await supabaseAdmin.from("project_stages").insert({
+      project_id: data.projectId,
+      name: data.name,
+      description: data.description ?? null,
+      stage_type: data.stageType,
+      order_index: nextIdx,
+      expected_days: data.expectedDays,
+      deadline: data.deadline ?? null,
+      requires_attachments: data.requiresAttachments,
+      requires_financial: data.requiresFinancial,
+    });
+    if (error) throw new Error(error.message);
+    await supabaseAdmin.from("project_logs").insert({
+      project_id: data.projectId, actor_id: context.userId, action: "stage_added",
+      details: { name: data.name },
+    });
+    return { ok: true };
+  });
+
+export const deleteProjectStage = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ stageId: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { data: isAdmin } = await context.supabase.rpc("is_admin", { _user_id: context.userId });
+    if (!isAdmin) throw new Error("صلاحيات غير كافية");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: stage } = await supabaseAdmin.from("project_stages")
+      .select("project_id, name").eq("id", data.stageId).single();
+    await supabaseAdmin.from("tasks").delete().eq("stage_id", data.stageId);
+    const { error } = await supabaseAdmin.from("project_stages").delete().eq("id", data.stageId);
+    if (error) throw new Error(error.message);
+    if (stage) {
+      await supabaseAdmin.from("project_logs").insert({
+        project_id: stage.project_id, actor_id: context.userId, action: "stage_deleted",
+        details: { name: stage.name },
+      });
+    }
+    return { ok: true };
+  });
+
+export const applyTemplateToProject = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({
+    projectId: z.string().uuid(),
+    templateId: z.string().uuid(),
+  }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { data: isAdmin } = await context.supabase.rpc("is_admin", { _user_id: context.userId });
+    if (!isAdmin) throw new Error("صلاحيات غير كافية");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: project } = await supabaseAdmin.from("projects")
+      .select("start_date").eq("id", data.projectId).single();
+    if (!project) throw new Error("المشروع غير موجود");
+    const { data: existing } = await supabaseAdmin.from("project_stages")
+      .select("order_index").eq("project_id", data.projectId)
+      .order("order_index", { ascending: false }).limit(1).maybeSingle();
+    let baseIdx = existing?.order_index ?? 0;
+    const { data: tplStages } = await supabaseAdmin.from("workflow_template_stages")
+      .select("*").eq("template_id", data.templateId).order("order_index");
+    if (!tplStages?.length) throw new Error("القالب لا يحتوي مراحل");
+    const startDate = new Date(project.start_date);
+    let cumulative = 0;
+    const rows = tplStages.map((s) => {
+      cumulative += s.expected_days;
+      baseIdx += 1;
+      const deadline = new Date(startDate);
+      deadline.setDate(deadline.getDate() + cumulative);
+      return {
+        project_id: data.projectId,
+        name: s.name,
+        description: s.description,
+        stage_type: s.stage_type,
+        order_index: baseIdx,
+        expected_days: s.expected_days,
+        requires_attachments: s.requires_attachments,
+        requires_financial: s.requires_financial,
+        deadline: deadline.toISOString(),
+      };
+    });
+    const { error } = await supabaseAdmin.from("project_stages").insert(rows);
+    if (error) throw new Error(error.message);
+    await supabaseAdmin.from("project_logs").insert({
+      project_id: data.projectId, actor_id: context.userId, action: "template_applied",
+      details: { count: rows.length },
+    });
+    return { ok: true };
+  });
+
