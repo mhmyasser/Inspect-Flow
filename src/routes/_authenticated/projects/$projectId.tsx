@@ -1,10 +1,10 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { updateProject, updateStageStatus, addProjectStage, deleteProjectStage, applyTemplateToProject } from "@/lib/projects.functions";
+import { updateProject, updateStageStatus, addProjectStage, deleteProjectStage, applyTemplateToProject, deleteProject } from "@/lib/projects.functions";
 import { createTask } from "@/lib/tasks.functions";
 import { listEmployees } from "@/lib/employees.functions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -107,6 +107,7 @@ function ProjectDetailPage() {
           <Badge variant="outline">
             {project.status === "active" ? "نشط" : project.status === "completed" ? "مكتمل" : project.status === "cancelled" ? "ملغي" : "متوقف"}
           </Badge>
+          {isAdmin && <DeleteProjectButton projectId={projectId} projectName={project.name} />}
         </div>
       </div>
 
@@ -676,6 +677,34 @@ function DeleteStageButton({ stageId, stageName, projectId }: { stageId: string;
       onClick={() => { if (confirm(`حذف المرحلة "${stageName}" وكل مهامها؟`)) m.mutate(); }}
       disabled={m.isPending}>
       <Trash2 className="h-4 w-4" />
+    </Button>
+  );
+}
+
+function DeleteProjectButton({ projectId, projectName }: { projectId: string; projectName: string }) {
+  const del = useServerFn(deleteProject);
+  const navigate = useNavigate();
+  const qc = useQueryClient();
+  const m = useMutation({
+    mutationFn: () => del({ data: { projectId } }),
+    onSuccess: () => {
+      toast.success("تم حذف المشروع");
+      qc.invalidateQueries({ queryKey: ["projects-list"] });
+      navigate({ to: "/projects" });
+    },
+    onError: (err: Error) => toast.error(err.message),
+  });
+  return (
+    <Button
+      size="sm"
+      variant="destructive"
+      disabled={m.isPending}
+      onClick={() => {
+        if (confirm(`حذف المشروع "${projectName}" نهائياً مع كل مراحله ومهامه؟ لا يمكن التراجع.`)) m.mutate();
+      }}
+    >
+      {m.isPending ? <Loader2 className="ms-2 h-4 w-4 animate-spin" /> : <Trash2 className="ms-2 h-4 w-4" />}
+      حذف المشروع
     </Button>
   );
 }

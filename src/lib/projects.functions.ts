@@ -231,3 +231,36 @@ export const applyTemplateToProject = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+
+export const deleteProject = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ projectId: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { data: isAdmin } = await context.supabase.rpc("is_admin", { _user_id: context.userId });
+    if (!isAdmin) throw new Error("صلاحيات غير كافية");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    // Collect stage and task ids for cascading cleanup
+    const { data: stages } = await supabaseAdmin.from("project_stages")
+      .select("id").eq("project_id", data.projectId);
+    const stageIds = (stages ?? []).map((s) => s.id);
+
+    if (stageIds.length) {
+      const { data: tasks } = await supabaseAdmin.from("tasks")
+        .select("id").in("stage_id", stageIds);
+      const taskIds = (tasks ?? []).map((t) => t.id);
+      if (taskIds.length) {
+        await supabaseAdmin.from("blockers").delete().in("task_id", taskIds);
+        await supabaseAdmin.from("task_comments").delete().in("task_id", taskIds);
+        await supabaseAdmin.from("task_attachments").delete().in("task_id", taskIds);
+        await supabaseAdmin.from("notifications_queue").delete().in("related_task_id", taskIds);
+        await supabaseAdmin.from("tasks").delete().in("id", taskIds);
+      }
+      await supabaseAdmin.from("project_stages").delete().in("id", stageIds);
+    }
+    await supabaseAdmin.from("notifications_queue").delete().eq("related_project_id", data.projectId);
+    await supabaseAdmin.from("project_logs").delete().eq("project_id", data.projectId);
+    const { error } = await supabaseAdmin.from("projects").delete().eq("id", data.projectId);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
