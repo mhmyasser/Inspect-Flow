@@ -107,6 +107,7 @@ function ProjectDetailPage() {
           <Badge variant="outline">
             {project.status === "active" ? "نشط" : project.status === "completed" ? "مكتمل" : project.status === "cancelled" ? "ملغي" : "متوقف"}
           </Badge>
+          {isAdmin && <DeleteProjectButton projectId={projectId} projectName={project.name} />}
         </div>
       </div>
 
