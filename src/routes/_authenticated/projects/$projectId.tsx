@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
-import { updateProject, updateStageStatus } from "@/lib/projects.functions";
+import { updateProject, updateStageStatus, addProjectStage, deleteProjectStage, applyTemplateToProject } from "@/lib/projects.functions";
 import { createTask } from "@/lib/tasks.functions";
 import { listEmployees } from "@/lib/employees.functions";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,8 +17,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { CheckCircle2, Circle, Clock, AlertCircle, Plus, ArrowLeft, Loader2, UserPlus } from "lucide-react";
+import { CheckCircle2, Circle, Clock, AlertCircle, Plus, ArrowLeft, Loader2, UserPlus, Trash2, LayoutTemplate } from "lucide-react";
+
 
 export const Route = createFileRoute("/_authenticated/projects/$projectId")({
   component: ProjectDetailPage,
