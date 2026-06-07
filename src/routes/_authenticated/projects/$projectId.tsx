@@ -681,3 +681,31 @@ function DeleteStageButton({ stageId, stageName, projectId }: { stageId: string;
   );
 }
 
+function DeleteProjectButton({ projectId, projectName }: { projectId: string; projectName: string }) {
+  const del = useServerFn(deleteProject);
+  const navigate = useNavigate();
+  const qc = useQueryClient();
+  const m = useMutation({
+    mutationFn: () => del({ data: { projectId } }),
+    onSuccess: () => {
+      toast.success("تم حذف المشروع");
+      qc.invalidateQueries({ queryKey: ["projects-list"] });
+      navigate({ to: "/projects" });
+    },
+    onError: (err: Error) => toast.error(err.message),
+  });
+  return (
+    <Button
+      size="sm"
+      variant="destructive"
+      disabled={m.isPending}
+      onClick={() => {
+        if (confirm(`حذف المشروع "${projectName}" نهائياً مع كل مراحله ومهامه؟ لا يمكن التراجع.`)) m.mutate();
+      }}
+    >
+      {m.isPending ? <Loader2 className="ms-2 h-4 w-4 animate-spin" /> : <Trash2 className="ms-2 h-4 w-4" />}
+      حذف المشروع
+    </Button>
+  );
+}
+
