@@ -130,6 +130,18 @@ function ProjectDetailPage() {
         </TabsList>
 
         <TabsContent value="stages" className="space-y-3 mt-4">
+          {isAdmin && (
+            <div className="flex flex-wrap items-center justify-end gap-2">
+              <ApplyTemplateDialog projectId={projectId} projectType={project.project_type} />
+              <AddStageDialog projectId={projectId} />
+            </div>
+          )}
+          {!stages?.length && (
+            <Card><CardContent className="py-10 text-center text-sm text-muted-foreground">
+              لا توجد مراحل بعد. {isAdmin ? "أضف مرحلة جديدة أو طبّق قالباً جاهزاً." : ""}
+            </CardContent></Card>
+          )}
+
           {stages?.map((stage) => {
             const stageTasks = tasks?.filter((t) => t.stage_id === stage.id) ?? [];
             return (
