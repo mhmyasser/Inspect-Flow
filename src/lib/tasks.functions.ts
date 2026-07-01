@@ -51,6 +51,9 @@ export const createTask = createServerFn({ method: "POST" })
         details: { task: data.title, stage: stage.name },
       });
     }
+    const { dispatchWebhookEvent } = await import("@/lib/webhooks.server");
+    await dispatchWebhookEvent("task.created", { id: task.id, title: data.title, assigneeId: data.assigneeId, deadline: data.deadline });
+    await dispatchWebhookEvent("task.assigned", { id: task.id, title: data.title, assigneeId: data.assigneeId });
     return { id: task.id };
   });
 
