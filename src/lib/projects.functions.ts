@@ -66,6 +66,8 @@ export const createProject = createServerFn({ method: "POST" })
       project_id: project.id, actor_id: context.userId, action: "project_created",
       details: { name: project.name },
     });
+    const { dispatchWebhookEvent } = await import("@/lib/webhooks.server");
+    await dispatchWebhookEvent("project.created", { id: project.id, name: project.name, type: data.projectType });
     return { id: project.id };
   });
 
