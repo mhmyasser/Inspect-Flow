@@ -169,5 +169,7 @@ export const reassignTask = createServerFn({ method: "POST" })
       { recipient_user_id: data.assigneeId, channel: "telegram", kind: "task_assigned",
         subject: "مهمة", body: `📋 ${task.title}`, related_task_id: data.taskId },
     ]);
+    const { dispatchWebhookEvent } = await import("@/lib/webhooks.server");
+    await dispatchWebhookEvent("task.assigned", { id: data.taskId, title: task.title, assigneeId: data.assigneeId });
     return { ok: true };
   });
