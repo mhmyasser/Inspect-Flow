@@ -139,6 +139,8 @@ export const reportBlocker = createServerFn({ method: "POST" })
       ]));
       await supabaseAdmin.from("notifications_queue").insert(rows);
     }
+    const { dispatchWebhookEvent } = await import("@/lib/webhooks.server");
+    await dispatchWebhookEvent("task.blocked", { id: data.taskId, reason: data.reason });
     return { ok: true };
   });
 
