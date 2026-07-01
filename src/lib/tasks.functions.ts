@@ -51,6 +51,9 @@ export const createTask = createServerFn({ method: "POST" })
         details: { task: data.title, stage: stage.name },
       });
     }
+    const { dispatchWebhookEvent } = await import("@/lib/webhooks.server");
+    await dispatchWebhookEvent("task.created", { id: task.id, title: data.title, assigneeId: data.assigneeId, deadline: data.deadline });
+    await dispatchWebhookEvent("task.assigned", { id: task.id, title: data.title, assigneeId: data.assigneeId });
     return { id: task.id };
   });
 
@@ -82,6 +85,8 @@ export const updateTaskStatus = createServerFn({ method: "POST" })
         details: { task: task.title, new_status: data.status },
       });
     }
+    const { dispatchWebhookEvent } = await import("@/lib/webhooks.server");
+    await dispatchWebhookEvent("task.status_changed", { id: data.taskId, title: task.title, status: data.status });
     return { ok: true };
   });
 
@@ -134,6 +139,8 @@ export const reportBlocker = createServerFn({ method: "POST" })
       ]));
       await supabaseAdmin.from("notifications_queue").insert(rows);
     }
+    const { dispatchWebhookEvent } = await import("@/lib/webhooks.server");
+    await dispatchWebhookEvent("task.blocked", { id: data.taskId, reason: data.reason });
     return { ok: true };
   });
 
@@ -162,5 +169,7 @@ export const reassignTask = createServerFn({ method: "POST" })
       { recipient_user_id: data.assigneeId, channel: "telegram", kind: "task_assigned",
         subject: "مهمة", body: `📋 ${task.title}`, related_task_id: data.taskId },
     ]);
+    const { dispatchWebhookEvent } = await import("@/lib/webhooks.server");
+    await dispatchWebhookEvent("task.assigned", { id: data.taskId, title: task.title, assigneeId: data.assigneeId });
     return { ok: true };
   });

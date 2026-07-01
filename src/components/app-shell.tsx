@@ -14,9 +14,12 @@ import {
   LogOut,
   Menu,
   X,
+  Webhook,
+  Sparkles,
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { NotificationsBell } from "@/components/notifications-bell";
 
 interface NavItem {
   to: string;
@@ -29,8 +32,10 @@ const NAV: NavItem[] = [
   { to: "/dashboard", label: "لوحة التحكم", icon: LayoutDashboard },
   { to: "/projects", label: "المشاريع", icon: FolderKanban },
   { to: "/my-tasks", label: "مهامي", icon: ListTodo },
+  { to: "/ai-assistant", label: "المساعد الذكي", icon: Sparkles },
   { to: "/employees", label: "الموظفون", icon: Users, adminOnly: true },
   { to: "/templates", label: "قوالب المراحل", icon: ListChecks, adminOnly: true },
+  { to: "/webhooks", label: "Webhooks", icon: Webhook, adminOnly: true },
   { to: "/settings", label: "الإعدادات", icon: Settings },
 ];
 
@@ -89,12 +94,17 @@ export function AppShell({ children }: { children: ReactNode }) {
       )}
 
       <div className="flex flex-1 flex-col min-w-0">
-        {/* Mobile topbar */}
-        <header className="md:hidden flex items-center justify-between px-4 h-14 border-b border-border bg-card">
-          <div className="font-semibold">إدارة المشاريع</div>
-          <Button variant="ghost" size="icon" onClick={() => setMobileOpen((v) => !v)}>
-            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </Button>
+        {/* Topbar */}
+        <header className="flex items-center justify-between px-4 h-14 border-b border-border bg-card/60 backdrop-blur">
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMobileOpen((v) => !v)}>
+              {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </Button>
+            <div className="font-semibold md:hidden">إدارة المشاريع</div>
+          </div>
+          <div className="flex items-center gap-2">
+            <NotificationsBell />
+          </div>
         </header>
 
         <main className="flex-1 p-4 md:p-8 overflow-x-hidden">{children}</main>

@@ -66,6 +66,8 @@ export const createProject = createServerFn({ method: "POST" })
       project_id: project.id, actor_id: context.userId, action: "project_created",
       details: { name: project.name },
     });
+    const { dispatchWebhookEvent } = await import("@/lib/webhooks.server");
+    await dispatchWebhookEvent("project.created", { id: project.id, name: project.name, type: data.projectType });
     return { id: project.id };
   });
 
@@ -262,5 +264,7 @@ export const deleteProject = createServerFn({ method: "POST" })
     await supabaseAdmin.from("project_logs").delete().eq("project_id", data.projectId);
     const { error } = await supabaseAdmin.from("projects").delete().eq("id", data.projectId);
     if (error) throw new Error(error.message);
+    const { dispatchWebhookEvent } = await import("@/lib/webhooks.server");
+    await dispatchWebhookEvent("project.deleted", { id: data.projectId });
     return { ok: true };
   });
