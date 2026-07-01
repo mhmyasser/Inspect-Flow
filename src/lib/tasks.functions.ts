@@ -14,7 +14,7 @@ export const createTask = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => CreateTaskSchema.parse(d))
   .handler(async ({ data, context }) => {
-    const { data: isAdmin } = await context.supabase.rpc("is_admin", { _user_id: context.userId });
+    const { data: __adminRow } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "admin").maybeSingle(); const isAdmin = !!__adminRow;
     if (!isAdmin) throw new Error("صلاحيات غير كافية");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: task, error } = await supabaseAdmin.from("tasks").insert({
@@ -145,7 +145,7 @@ export const reassignTask = createServerFn({ method: "POST" })
     deadline: z.string().optional(),
   }).parse(d))
   .handler(async ({ data, context }) => {
-    const { data: isAdmin } = await context.supabase.rpc("is_admin", { _user_id: context.userId });
+    const { data: __adminRow } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "admin").maybeSingle(); const isAdmin = !!__adminRow;
     if (!isAdmin) throw new Error("صلاحيات غير كافية");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const update: { assignee_id: string; assigned_at: string; status: "pending"; deadline?: string } = {
