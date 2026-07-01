@@ -56,7 +56,7 @@ export async function dispatchWebhookEvent(
       await supabaseAdmin.from("webhook_deliveries").insert({
         webhook_id: hook.id,
         event,
-        payload: { event, payload },
+        payload: JSON.parse(body),
         status_code: statusCode,
         error: errorMsg,
         delivered_at: new Date().toISOString(),
