@@ -16,7 +16,7 @@ export const createProject = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => CreateProjectSchema.parse(d))
   .handler(async ({ data, context }) => {
-    const { data: isAdmin } = await context.supabase.rpc("is_admin", { _user_id: context.userId });
+    const { data: __adminRow } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "admin").maybeSingle(); const isAdmin = !!__adminRow;
     if (!isAdmin) throw new Error("صلاحيات غير كافية");
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -82,7 +82,7 @@ export const updateProject = createServerFn({ method: "POST" })
     collectedAmount: z.number().min(0).default(0),
   }).parse(d))
   .handler(async ({ data, context }) => {
-    const { data: isAdmin } = await context.supabase.rpc("is_admin", { _user_id: context.userId });
+    const { data: __adminRow } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "admin").maybeSingle(); const isAdmin = !!__adminRow;
     if (!isAdmin) throw new Error("صلاحيات غير كافية");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.from("projects").update({
@@ -108,7 +108,7 @@ export const updateStageStatus = createServerFn({ method: "POST" })
     status: z.enum(["pending", "in_progress", "completed", "blocked"]),
   }).parse(d))
   .handler(async ({ data, context }) => {
-    const { data: isAdmin } = await context.supabase.rpc("is_admin", { _user_id: context.userId });
+    const { data: __adminRow } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "admin").maybeSingle(); const isAdmin = !!__adminRow;
     if (!isAdmin) throw new Error("صلاحيات غير كافية");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const completedAt = data.status === "completed" ? new Date().toISOString() : null;
@@ -136,7 +136,7 @@ export const addProjectStage = createServerFn({ method: "POST" })
     requiresFinancial: z.boolean().default(false),
   }).parse(d))
   .handler(async ({ data, context }) => {
-    const { data: isAdmin } = await context.supabase.rpc("is_admin", { _user_id: context.userId });
+    const { data: __adminRow } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "admin").maybeSingle(); const isAdmin = !!__adminRow;
     if (!isAdmin) throw new Error("صلاحيات غير كافية");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: maxRow } = await supabaseAdmin.from("project_stages")
@@ -166,7 +166,7 @@ export const deleteProjectStage = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ stageId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
-    const { data: isAdmin } = await context.supabase.rpc("is_admin", { _user_id: context.userId });
+    const { data: __adminRow } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "admin").maybeSingle(); const isAdmin = !!__adminRow;
     if (!isAdmin) throw new Error("صلاحيات غير كافية");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: stage } = await supabaseAdmin.from("project_stages")
@@ -190,7 +190,7 @@ export const applyTemplateToProject = createServerFn({ method: "POST" })
     templateId: z.string().uuid(),
   }).parse(d))
   .handler(async ({ data, context }) => {
-    const { data: isAdmin } = await context.supabase.rpc("is_admin", { _user_id: context.userId });
+    const { data: __adminRow } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "admin").maybeSingle(); const isAdmin = !!__adminRow;
     if (!isAdmin) throw new Error("صلاحيات غير كافية");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: project } = await supabaseAdmin.from("projects")
@@ -236,7 +236,7 @@ export const deleteProject = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ projectId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
-    const { data: isAdmin } = await context.supabase.rpc("is_admin", { _user_id: context.userId });
+    const { data: __adminRow } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "admin").maybeSingle(); const isAdmin = !!__adminRow;
     if (!isAdmin) throw new Error("صلاحيات غير كافية");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 

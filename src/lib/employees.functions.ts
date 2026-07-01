@@ -2,8 +2,14 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
 
-async function ensureAdmin(supabase: any, userId: string) {
-  const { data, error } = await supabase.rpc("is_admin", { _user_id: userId });
+async function ensureAdmin(_supabase: any, userId: string) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data, error } = await supabaseAdmin
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId)
+    .eq("role", "admin")
+    .maybeSingle();
   if (error || !data) throw new Error("صلاحيات غير كافية");
 }
 

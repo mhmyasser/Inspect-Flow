@@ -22,7 +22,7 @@ export const upsertTemplate = createServerFn({ method: "POST" })
     stages: z.array(StageInput).min(1),
   }).parse(d))
   .handler(async ({ data, context }) => {
-    const { data: isAdmin } = await context.supabase.rpc("is_admin", { _user_id: context.userId });
+    const { data: __adminRow } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "admin").maybeSingle(); const isAdmin = !!__adminRow;
     if (!isAdmin) throw new Error("صلاحيات غير كافية");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     let templateId = data.id;
@@ -59,7 +59,7 @@ export const deleteTemplate = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
-    const { data: isAdmin } = await context.supabase.rpc("is_admin", { _user_id: context.userId });
+    const { data: __adminRow } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "admin").maybeSingle(); const isAdmin = !!__adminRow;
     if (!isAdmin) throw new Error("صلاحيات غير كافية");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await supabaseAdmin.from("workflow_templates").delete().eq("id", data.id);
