@@ -264,5 +264,7 @@ export const deleteProject = createServerFn({ method: "POST" })
     await supabaseAdmin.from("project_logs").delete().eq("project_id", data.projectId);
     const { error } = await supabaseAdmin.from("projects").delete().eq("id", data.projectId);
     if (error) throw new Error(error.message);
+    const { dispatchWebhookEvent } = await import("@/lib/webhooks.server");
+    await dispatchWebhookEvent("project.deleted", { id: data.projectId });
     return { ok: true };
   });
