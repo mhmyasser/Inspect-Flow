@@ -85,6 +85,8 @@ export const updateTaskStatus = createServerFn({ method: "POST" })
         details: { task: task.title, new_status: data.status },
       });
     }
+    const { dispatchWebhookEvent } = await import("@/lib/webhooks.server");
+    await dispatchWebhookEvent("task.status_changed", { id: data.taskId, title: task.title, status: data.status });
     return { ok: true };
   });
 
