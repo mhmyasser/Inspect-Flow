@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Navigate } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
@@ -8,12 +8,26 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Sparkles, Send } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/_authenticated/ai-assistant")({
   component: AiAssistantPage,
 });
 
 type Msg = { role: "user" | "assistant"; content: string };
+
+const suggestions = [
+  "ما هي أهم المخاطر التشغيلية حالياً؟",
+  "اقترح إعادة توزيع للمهام المتأخرة.",
+  "لخّص أداء الفريق هذا الأسبوع.",
+  "أي المشاريع تحتاج تدخّل الإدارة؟",
+];
+
+function AiAssistantPage() {
+  const { role, loading } = useAuth();
+  const ask = useServerFn(askAssistant);
+  const [messages, setMessages] = useState<Msg[]>([]);
+  const [input, setInput] = useState("");
 
 const suggestions = [
   "ما هي أهم المخاطر التشغيلية حالياً؟",
