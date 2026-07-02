@@ -88,8 +88,8 @@ function AuthPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-secondary to-accent/40 p-4">
       <Card className="w-full max-w-md shadow-xl">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">
-            {isBootstrap ? "إنشاء حساب المدير الأول" : "تسجيل الدخول"}
+          <CardTitle asChild className="text-2xl">
+            <h1>{isBootstrap ? "إنشاء حساب المدير الأول" : "تسجيل الدخول"}</h1>
           </CardTitle>
           <CardDescription>
             {isBootstrap
