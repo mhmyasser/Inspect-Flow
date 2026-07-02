@@ -97,7 +97,14 @@ export function AppShell({ children }: { children: ReactNode }) {
         {/* Topbar */}
         <header className="flex items-center justify-between px-4 h-14 border-b border-border bg-card/60 backdrop-blur">
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMobileOpen((v) => !v)}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="md:hidden"
+              onClick={() => setMobileOpen((v) => !v)}
+              aria-label={mobileOpen ? "إغلاق القائمة" : "فتح القائمة"}
+              aria-expanded={mobileOpen}
+            >
               {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
             <div className="font-semibold md:hidden">إدارة المشاريع</div>
