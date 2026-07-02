@@ -4,12 +4,25 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
+  head: () => ({
+    meta: [
+      { title: "تسجيل الدخول — إدارة المشاريع التجارية" },
+      { name: "description", content: "سجّل الدخول إلى نظام إدارة المشاريع التجارية لمتابعة المهام والمناقصات والمراحل التشغيلية." },
+      { property: "og:title", content: "تسجيل الدخول — إدارة المشاريع التجارية" },
+      { property: "og:description", content: "سجّل الدخول إلى نظام إدارة المشاريع التجارية لمتابعة المهام والمناقصات والمراحل التشغيلية." },
+      { property: "og:url", content: "https://work-wave-zen.lovable.app/auth" },
+      { name: "twitter:title", content: "تسجيل الدخول — إدارة المشاريع التجارية" },
+      { name: "twitter:description", content: "سجّل الدخول إلى نظام إدارة المشاريع التجارية." },
+      { name: "robots", content: "noindex,follow" },
+    ],
+    links: [{ rel: "canonical", href: "https://work-wave-zen.lovable.app/auth" }],
+  }),
   component: AuthPage,
 });
 
@@ -75,9 +88,9 @@ function AuthPage() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-secondary to-accent/40 p-4">
       <Card className="w-full max-w-md shadow-xl">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl">
+          <h1 className="text-2xl font-semibold leading-none tracking-tight">
             {isBootstrap ? "إنشاء حساب المدير الأول" : "تسجيل الدخول"}
-          </CardTitle>
+          </h1>
           <CardDescription>
             {isBootstrap
               ? "هذا أول حساب في النظام وسيحصل على صلاحيات المدير"
