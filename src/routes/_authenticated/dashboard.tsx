@@ -5,14 +5,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Plus, FolderKanban, AlertTriangle, Clock, CheckCircle2, TrendingUp } from "lucide-react";
+import { Plus, FolderKanban, AlertTriangle, Clock, CheckCircle2, TrendingUp, ChevronDown } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   ChartContainer, ChartTooltip, ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, ResponsiveContainer } from "recharts";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -21,7 +21,17 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 
 type Project = { id: string; name: string; status: string; project_type: string; start_date: string | null; expected_end_date: string | null; created_at: string };
 type Task = { id: string; title: string; status: string; deadline: string | null; assignee_id: string | null; created_at: string; completed_at: string | null };
-type Blocker = { id: string; reason: string; task_id: string; resolved: boolean; created_at: string };
+type BlockerDetail = {
+  id: string;
+  reason: string;
+  created_at: string;
+  task: {
+    id: string;
+    title: string;
+    stage: { id: string; name: string; project: { id: string; name: string } | null } | null;
+  } | null;
+};
+
 
 const statusLabels: Record<string, string> = {
   active: "نشط", completed: "مكتمل", cancelled: "ملغي", on_hold: "متوقف",
@@ -86,11 +96,14 @@ function DashboardPage() {
     enabled: isAdmin,
     queryFn: async () => {
       const { data, error } = await supabase.from("blockers")
-        .select("id, reason, task_id, resolved, created_at").eq("resolved", false);
+        .select("id, reason, created_at, task:tasks!inner(id, title, stage:project_stages!inner(id, name, project:projects!inner(id, name)))")
+        .eq("resolved", false)
+        .order("created_at", { ascending: false });
       if (error) throw error;
-      return data as Blocker[];
+      return (data ?? []) as unknown as BlockerDetail[];
     },
   });
+
 
   // Realtime refresh on data changes
   useEffect(() => {
@@ -162,13 +175,11 @@ function DashboardPage() {
             </div>
           )}
           {(blockers?.length ?? 0) > 0 && (
-            <div className="flex items-center gap-3 p-3 rounded-md border border-warning/40 bg-warning/10">
-              <AlertTriangle className="h-5 w-5 text-warning" />
-              <div className="text-sm"><strong>{blockers?.length}</strong> عائق مفتوح بحاجة إلى مراجعة.</div>
-            </div>
+            <BlockersAlert blockers={blockers ?? []} />
           )}
         </div>
       )}
+
 
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -323,3 +334,77 @@ function StatusBadge({ status }: { status: string }) {
   const s = map[status] ?? { label: status, variant: "outline" as const };
   return <Badge variant={s.variant}>{s.label}</Badge>;
 }
+
+function BlockersAlert({ blockers }: { blockers: BlockerDetail[] }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="rounded-md border border-warning/40 bg-warning/10">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="w-full flex items-center gap-3 p-3 text-right hover:bg-warning/15 transition-colors rounded-md"
+      >
+        <AlertTriangle className="h-5 w-5 text-warning shrink-0" />
+        <div className="text-sm flex-1">
+          <strong>{blockers.length}</strong> عائق مفتوح بحاجة إلى مراجعة.
+          <span className="text-muted-foreground me-2">
+            {open ? "اضغط للإخفاء" : "اضغط لعرض التفاصيل"}
+          </span>
+        </div>
+        <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && (
+        <ul className="border-t border-warning/30 divide-y divide-warning/20">
+          {blockers.map((b) => (
+            <li key={b.id} className="p-3">
+              <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground mb-1">
+                {b.task?.stage?.project && (
+                  <Link
+                    to="/projects/$projectId"
+                    params={{ projectId: b.task.stage.project.id }}
+                    className="font-medium text-foreground hover:text-primary"
+                  >
+                    {b.task.stage.project.name}
+                  </Link>
+                )}
+                {b.task?.stage && (
+                  <>
+                    <span>›</span>
+                    <span>{b.task.stage.name}</span>
+                  </>
+                )}
+                {b.task && (
+                  <>
+                    <span>›</span>
+                    <Link
+                      to="/tasks/$taskId"
+                      params={{ taskId: b.task.id }}
+                      className="hover:text-primary"
+                    >
+                      {b.task.title}
+                    </Link>
+                  </>
+                )}
+                <span className="ms-auto">
+                  {new Date(b.created_at).toLocaleDateString("ar-EG")}
+                </span>
+              </div>
+              <p className="text-sm whitespace-pre-wrap break-words">{b.reason}</p>
+              {b.task && (
+                <div className="mt-2">
+                  <Button asChild size="sm" variant="outline">
+                    <Link to="/tasks/$taskId" params={{ taskId: b.task.id }}>
+                      فتح المهمة
+                    </Link>
+                  </Button>
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
