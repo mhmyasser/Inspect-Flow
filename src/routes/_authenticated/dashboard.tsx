@@ -96,11 +96,14 @@ function DashboardPage() {
     enabled: isAdmin,
     queryFn: async () => {
       const { data, error } = await supabase.from("blockers")
-        .select("id, reason, task_id, resolved, created_at").eq("resolved", false);
+        .select("id, reason, created_at, task:tasks!inner(id, title, stage:project_stages!inner(id, name, project:projects!inner(id, name)))")
+        .eq("resolved", false)
+        .order("created_at", { ascending: false });
       if (error) throw error;
-      return data as Blocker[];
+      return (data ?? []) as unknown as BlockerDetail[];
     },
   });
+
 
   // Realtime refresh on data changes
   useEffect(() => {
