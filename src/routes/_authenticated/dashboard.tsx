@@ -175,13 +175,11 @@ function DashboardPage() {
             </div>
           )}
           {(blockers?.length ?? 0) > 0 && (
-            <div className="flex items-center gap-3 p-3 rounded-md border border-warning/40 bg-warning/10">
-              <AlertTriangle className="h-5 w-5 text-warning" />
-              <div className="text-sm"><strong>{blockers?.length}</strong> عائق مفتوح بحاجة إلى مراجعة.</div>
-            </div>
+            <BlockersAlert blockers={blockers ?? []} />
           )}
         </div>
       )}
+
 
       {/* KPIs */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
