@@ -91,5 +91,5 @@ export const askAssistant = createServerFn({ method: "POST" })
     }
     const json = await res.json() as { choices?: Array<{ message?: { content?: string } }> };
     const answer = json.choices?.[0]?.message?.content ?? "لم أستطع توليد إجابة.";
-    return { answer, context: ctx };
+    return { answer };
   });
