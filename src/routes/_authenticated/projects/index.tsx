@@ -55,7 +55,7 @@ function ProjectsListPage() {
               <Card className="hover:border-primary transition-colors h-full">
                 <CardContent className="pt-6 space-y-2">
                   <div className="flex items-start justify-between gap-2">
-                    <h3 className="font-semibold">{p.name}</h3>
+                    <h2 className="font-semibold text-base">{p.name}</h2>
                     <Badge variant={p.project_type === "tender" ? "default" : "secondary"}>
                       {p.project_type === "tender" ? "مناقصة" : "مباشر"}
                     </Badge>
