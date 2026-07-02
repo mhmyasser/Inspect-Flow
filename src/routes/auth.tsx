@@ -10,6 +10,19 @@ import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
+  head: () => ({
+    meta: [
+      { title: "تسجيل الدخول — إدارة المشاريع التجارية" },
+      { name: "description", content: "سجّل الدخول إلى نظام إدارة المشاريع التجارية لمتابعة المهام والمناقصات والمراحل التشغيلية." },
+      { property: "og:title", content: "تسجيل الدخول — إدارة المشاريع التجارية" },
+      { property: "og:description", content: "سجّل الدخول إلى نظام إدارة المشاريع التجارية لمتابعة المهام والمناقصات والمراحل التشغيلية." },
+      { property: "og:url", content: "https://work-wave-zen.lovable.app/auth" },
+      { name: "twitter:title", content: "تسجيل الدخول — إدارة المشاريع التجارية" },
+      { name: "twitter:description", content: "سجّل الدخول إلى نظام إدارة المشاريع التجارية." },
+      { name: "robots", content: "noindex,follow" },
+    ],
+    links: [{ rel: "canonical", href: "https://work-wave-zen.lovable.app/auth" }],
+  }),
   component: AuthPage,
 });
 
