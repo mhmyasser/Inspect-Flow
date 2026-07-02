@@ -334,3 +334,77 @@ function StatusBadge({ status }: { status: string }) {
   const s = map[status] ?? { label: status, variant: "outline" as const };
   return <Badge variant={s.variant}>{s.label}</Badge>;
 }
+
+function BlockersAlert({ blockers }: { blockers: BlockerDetail[] }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="rounded-md border border-warning/40 bg-warning/10">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className="w-full flex items-center gap-3 p-3 text-right hover:bg-warning/15 transition-colors rounded-md"
+      >
+        <AlertTriangle className="h-5 w-5 text-warning shrink-0" />
+        <div className="text-sm flex-1">
+          <strong>{blockers.length}</strong> عائق مفتوح بحاجة إلى مراجعة.
+          <span className="text-muted-foreground me-2">
+            {open ? "اضغط للإخفاء" : "اضغط لعرض التفاصيل"}
+          </span>
+        </div>
+        <ChevronDown className={`h-4 w-4 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && (
+        <ul className="border-t border-warning/30 divide-y divide-warning/20">
+          {blockers.map((b) => (
+            <li key={b.id} className="p-3">
+              <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground mb-1">
+                {b.task?.stage?.project && (
+                  <Link
+                    to="/projects/$projectId"
+                    params={{ projectId: b.task.stage.project.id }}
+                    className="font-medium text-foreground hover:text-primary"
+                  >
+                    {b.task.stage.project.name}
+                  </Link>
+                )}
+                {b.task?.stage && (
+                  <>
+                    <span>›</span>
+                    <span>{b.task.stage.name}</span>
+                  </>
+                )}
+                {b.task && (
+                  <>
+                    <span>›</span>
+                    <Link
+                      to="/tasks/$taskId"
+                      params={{ taskId: b.task.id }}
+                      className="hover:text-primary"
+                    >
+                      {b.task.title}
+                    </Link>
+                  </>
+                )}
+                <span className="ms-auto">
+                  {new Date(b.created_at).toLocaleDateString("ar-EG")}
+                </span>
+              </div>
+              <p className="text-sm whitespace-pre-wrap break-words">{b.reason}</p>
+              {b.task && (
+                <div className="mt-2">
+                  <Button asChild size="sm" variant="outline">
+                    <Link to="/tasks/$taskId" params={{ taskId: b.task.id }}>
+                      فتح المهمة
+                    </Link>
+                  </Button>
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
