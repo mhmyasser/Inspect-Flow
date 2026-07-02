@@ -8,7 +8,12 @@ import { createFileRoute } from "@tanstack/react-router";
 export const Route = createFileRoute("/api/public/notifications/dispatch")({
   server: {
     handlers: {
-      POST: async () => {
+      POST: async ({ request }) => {
+        const CRON_SECRET = process.env.CRON_SECRET;
+        const incoming = request.headers.get("x-cron-secret");
+        if (!CRON_SECRET || incoming !== CRON_SECRET) {
+          return Response.json({ error: "Unauthorized" }, { status: 401 });
+        }
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const now = new Date();
 

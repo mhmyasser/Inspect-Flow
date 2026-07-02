@@ -45,7 +45,16 @@ async function buildOperationalContext() {
 export const askAssistant = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => AskSchema.parse(d))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    // Admin-only: this endpoint reads across-tenant data via the admin client.
+    const { data: adminRow, error: adminErr } = await context.supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", context.userId)
+      .eq("role", "admin")
+      .maybeSingle();
+    if (adminErr || !adminRow) throw new Error("صلاحيات غير كافية");
+
     const key = process.env.LOVABLE_API_KEY;
     if (!key) throw new Error("مفتاح المساعد الذكي غير مضبوط.");
 
@@ -82,5 +91,5 @@ export const askAssistant = createServerFn({ method: "POST" })
     }
     const json = await res.json() as { choices?: Array<{ message?: { content?: string } }> };
     const answer = json.choices?.[0]?.message?.content ?? "لم أستطع توليد إجابة.";
-    return { answer, context: ctx };
+    return { answer };
   });

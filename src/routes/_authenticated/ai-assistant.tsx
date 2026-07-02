@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Navigate } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Sparkles, Send } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/_authenticated/ai-assistant")({
   component: AiAssistantPage,
@@ -23,9 +24,15 @@ const suggestions = [
 ];
 
 function AiAssistantPage() {
+  const { role, loading } = useAuth();
   const ask = useServerFn(askAssistant);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
+
+  if (loading) return null;
+  if (role !== "admin") return <Navigate to="/dashboard" />;
+
+
 
   const mut = useMutation({
     mutationFn: (q: string) => ask({ data: { question: q } }),
