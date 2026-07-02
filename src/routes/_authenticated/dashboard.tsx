@@ -5,14 +5,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Plus, FolderKanban, AlertTriangle, Clock, CheckCircle2, TrendingUp } from "lucide-react";
+import { Plus, FolderKanban, AlertTriangle, Clock, CheckCircle2, TrendingUp, ChevronDown } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   ChartContainer, ChartTooltip, ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, ResponsiveContainer } from "recharts";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -21,7 +21,17 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 
 type Project = { id: string; name: string; status: string; project_type: string; start_date: string | null; expected_end_date: string | null; created_at: string };
 type Task = { id: string; title: string; status: string; deadline: string | null; assignee_id: string | null; created_at: string; completed_at: string | null };
-type Blocker = { id: string; reason: string; task_id: string; resolved: boolean; created_at: string };
+type BlockerDetail = {
+  id: string;
+  reason: string;
+  created_at: string;
+  task: {
+    id: string;
+    title: string;
+    stage: { id: string; name: string; project: { id: string; name: string } | null } | null;
+  } | null;
+};
+
 
 const statusLabels: Record<string, string> = {
   active: "نشط", completed: "مكتمل", cancelled: "ملغي", on_hold: "متوقف",
