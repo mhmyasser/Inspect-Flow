@@ -29,17 +29,10 @@ function AiAssistantPage() {
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
 
-const suggestions = [
-  "ما هي أهم المخاطر التشغيلية حالياً؟",
-  "اقترح إعادة توزيع للمهام المتأخرة.",
-  "لخّص أداء الفريق هذا الأسبوع.",
-  "أي المشاريع تحتاج تدخّل الإدارة؟",
-];
+  if (loading) return null;
+  if (role !== "admin") return <Navigate to="/dashboard" />;
 
-function AiAssistantPage() {
-  const ask = useServerFn(askAssistant);
-  const [messages, setMessages] = useState<Msg[]>([]);
-  const [input, setInput] = useState("");
+
 
   const mut = useMutation({
     mutationFn: (q: string) => ask({ data: { question: q } }),
