@@ -339,3 +339,111 @@ function StatusBadge({ status }: { status: string }) {
   const s = map[status] ?? { label: status, variant: "outline" as const };
   return <Badge variant={s.variant}>{s.label}</Badge>;
 }
+
+type BlockerRow = {
+  id: string; reason: string; resolved: boolean;
+  created_at: string; resolved_at: string | null;
+  resolution_note: string | null;
+  reporter_name: string | null; resolver_name: string | null;
+};
+
+function BlockersCard({ taskId, blockers, isAdmin }: { taskId: string; blockers: BlockerRow[]; isAdmin: boolean }) {
+  const open = blockers.filter((b) => !b.resolved);
+  const resolved = blockers.filter((b) => b.resolved);
+  if (!blockers.length) return null;
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base flex items-center gap-2">
+          <ShieldAlert className="h-4 w-4 text-warning" />
+          العوائق ({open.length} مفتوح{resolved.length ? ` • ${resolved.length} تم حله` : ""})
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        {open.map((b) => (
+          <div key={b.id} className="p-3 rounded-md border border-destructive/40 bg-destructive/5">
+            <div className="flex items-center justify-between gap-2 flex-wrap mb-1">
+              <div className="text-xs text-muted-foreground">
+                أبلغ عنه: <span className="text-foreground font-medium">{b.reporter_name ?? "—"}</span>
+                {" • "}{new Date(b.created_at).toLocaleString("ar-EG")}
+              </div>
+              <Badge variant="destructive">مفتوح</Badge>
+            </div>
+            <p className="text-sm whitespace-pre-wrap break-words">{b.reason}</p>
+            {isAdmin && (
+              <div className="mt-2">
+                <ResolveBlockerButton blockerId={b.id} taskId={taskId} />
+              </div>
+            )}
+          </div>
+        ))}
+        {resolved.map((b) => (
+          <div key={b.id} className="p-3 rounded-md border border-border bg-muted/30 opacity-90">
+            <div className="flex items-center justify-between gap-2 flex-wrap mb-1">
+              <div className="text-xs text-muted-foreground">
+                أبلغ عنه: <span className="text-foreground">{b.reporter_name ?? "—"}</span>
+                {" • "}{new Date(b.created_at).toLocaleString("ar-EG")}
+              </div>
+              <Badge variant="secondary" className="gap-1"><CheckCircle2 className="h-3 w-3" /> تم الحل</Badge>
+            </div>
+            <p className="text-sm whitespace-pre-wrap break-words">{b.reason}</p>
+            {b.resolution_note && (
+              <div className="text-xs mt-2 p-2 rounded bg-background border border-border">
+                <span className="text-muted-foreground">ملاحظة الحل ({b.resolver_name ?? "—"}
+                {b.resolved_at ? ` • ${new Date(b.resolved_at).toLocaleString("ar-EG")}` : ""}):</span>
+                <p className="mt-1 whitespace-pre-wrap">{b.resolution_note}</p>
+              </div>
+            )}
+          </div>
+        ))}
+      </CardContent>
+    </Card>
+  );
+}
+
+function ResolveBlockerButton({ blockerId, taskId }: { blockerId: string; taskId: string }) {
+  const [open, setOpen] = useState(false);
+  const [note, setNote] = useState("");
+  const [resume, setResume] = useState(true);
+  const resolve = useServerFn(resolveBlocker);
+  const qc = useQueryClient();
+  const m = useMutation({
+    mutationFn: () => resolve({ data: { blockerId, resolutionNote: note || null, resumeTask: resume } }),
+    onSuccess: () => {
+      toast.success("تم حل العائق");
+      setOpen(false); setNote("");
+      qc.invalidateQueries({ queryKey: ["task-blockers", taskId] });
+      qc.invalidateQueries({ queryKey: ["task", taskId] });
+      qc.invalidateQueries({ queryKey: ["dashboard-blockers"] });
+    },
+    onError: (err: Error) => toast.error(err.message),
+  });
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button size="sm" variant="outline"><CheckCircle2 className="ms-2 h-3 w-3" /> حل العائق</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader><DialogTitle>حل العائق</DialogTitle></DialogHeader>
+        <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); m.mutate(); }}>
+          <div className="space-y-2">
+            <Label>ملاحظة الحل (اختياري)</Label>
+            <Textarea rows={3} value={note} onChange={(e) => setNote(e.target.value)} maxLength={2000} />
+          </div>
+          <label className="flex items-center gap-2 text-sm">
+            <input type="checkbox" checked={resume} onChange={(e) => setResume(e.target.checked)} />
+            استئناف المهمة تلقائياً (إعادتها لقيد التنفيذ)
+          </label>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setOpen(false)}>إلغاء</Button>
+            <Button type="submit" disabled={m.isPending}>
+              {m.isPending && <Loader2 className="ms-2 h-4 w-4 animate-spin" />}
+              حفظ
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
