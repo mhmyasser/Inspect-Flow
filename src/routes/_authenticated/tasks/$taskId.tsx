@@ -173,6 +173,14 @@ function TaskDetailPage() {
         </CardContent>
       </Card>
 
+      <BlockersCard
+        taskId={task.id}
+        blockers={blockers ?? []}
+        isAdmin={isAdmin}
+      />
+
+
+
       <Card>
         <CardHeader>
           <CardTitle className="text-base">التعليقات</CardTitle>
