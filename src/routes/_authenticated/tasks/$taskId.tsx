@@ -14,7 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { ArrowLeft, AlertCircle, Loader2, Paperclip, Send, FileText } from "lucide-react";
+import { ArrowLeft, AlertCircle, Loader2, Paperclip, Send, FileText, CheckCircle2, ShieldAlert } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/tasks/$taskId")({
   component: TaskDetailPage,
