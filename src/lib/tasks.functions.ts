@@ -144,6 +144,39 @@ export const reportBlocker = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const resolveBlocker = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({
+    blockerId: z.string().uuid(),
+    resolutionNote: z.string().max(2000).optional().nullable(),
+    resumeTask: z.boolean().optional(),
+  }).parse(d))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { data: __adminRow } = await supabase.from("user_roles").select("role").eq("user_id", userId).eq("role", "admin").maybeSingle();
+    if (!__adminRow) throw new Error("صلاحيات غير كافية");
+    const { data: blocker, error } = await supabase.from("blockers").update({
+      resolved: true,
+      resolved_by: userId,
+      resolved_at: new Date().toISOString(),
+      resolution_note: data.resolutionNote ?? null,
+    }).eq("id", data.blockerId).select("task_id").single();
+    if (error) throw new Error(error.message);
+    if (data.resumeTask && blocker?.task_id) {
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      // Check if any other open blockers remain
+      const { count } = await supabaseAdmin.from("blockers")
+        .select("id", { count: "exact", head: true })
+        .eq("task_id", blocker.task_id).eq("resolved", false);
+      if (!count) {
+        await supabaseAdmin.from("tasks")
+          .update({ status: "in_progress", paused_at: null })
+          .eq("id", blocker.task_id);
+      }
+    }
+    return { ok: true };
+  });
+
 export const reassignTask = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({
