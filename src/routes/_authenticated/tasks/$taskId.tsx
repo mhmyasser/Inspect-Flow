@@ -66,6 +66,25 @@ function TaskDetailPage() {
     },
   });
 
+  const { data: blockers } = useQuery({
+    queryKey: ["task-blockers", taskId],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("blockers")
+        .select("*").eq("task_id", taskId).order("created_at", { ascending: false });
+      if (error) throw error;
+      const ids = Array.from(new Set(data.flatMap((b) => [b.reported_by, b.resolved_by]).filter((x): x is string => !!x)));
+      const { data: profs } = ids.length
+        ? await supabase.from("profiles").select("id, full_name").in("id", ids)
+        : { data: [] as { id: string; full_name: string }[] };
+      const map = new Map((profs ?? []).map((p) => [p.id, p.full_name]));
+      return data.map((b) => ({
+        ...b,
+        reporter_name: b.reported_by ? map.get(b.reported_by) ?? null : null,
+        resolver_name: b.resolved_by ? map.get(b.resolved_by) ?? null : null,
+      }));
+    },
+  });
+
   if (isLoading) return <p className="text-muted-foreground">جاري التحميل...</p>;
   if (!task) return <p className="text-destructive">المهمة غير موجودة</p>;
 
