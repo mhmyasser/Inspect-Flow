@@ -67,6 +67,32 @@ function ProjectDetailPage() {
     },
   });
 
+  const { data: taskBlockers } = useQuery({
+    queryKey: ["project-task-blockers", projectId],
+    enabled: !!tasks?.length,
+    queryFn: async () => {
+      const taskIds = tasks!.map((t) => t.id);
+      const { data, error } = await supabase.from("blockers")
+        .select("id, task_id, reason, resolved, created_at, reported_by")
+        .in("task_id", taskIds).eq("resolved", false)
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      const ids = Array.from(new Set(data.map((b) => b.reported_by).filter((x): x is string => !!x)));
+      const { data: profs } = ids.length
+        ? await supabase.from("profiles").select("id, full_name").in("id", ids)
+        : { data: [] as { id: string; full_name: string }[] };
+      const nameMap = new Map((profs ?? []).map((p) => [p.id, p.full_name]));
+      const byTask = new Map<string, { id: string; reason: string; created_at: string; reporter_name: string | null }[]>();
+      for (const b of data) {
+        const arr = byTask.get(b.task_id) ?? [];
+        arr.push({ id: b.id, reason: b.reason, created_at: b.created_at, reporter_name: b.reported_by ? nameMap.get(b.reported_by) ?? null : null });
+        byTask.set(b.task_id, arr);
+      }
+      return byTask;
+    },
+  });
+
+
   const { data: logs } = useQuery({
     queryKey: ["project-logs", projectId],
     enabled: isAdmin,
