@@ -203,20 +203,44 @@ function ProjectDetailPage() {
                   </div>
                   {stageTasks.length > 0 && (
                     <div className="mt-4 space-y-2 ps-9">
-                      {stageTasks.map((t) => (
-                        <Link
-                          key={t.id} to="/tasks/$taskId" params={{ taskId: t.id }}
-                          className="flex items-center justify-between p-2 rounded border border-border hover:bg-accent transition-colors"
-                        >
-                          <div>
-                            <div className="text-sm font-medium">{t.title}</div>
-                            <div className="text-xs text-muted-foreground">
-                              {t.assignee_name ?? "غير مسند"}
-                            </div>
+                      {stageTasks.map((t) => {
+                        const tb = taskBlockers?.get(t.id) ?? [];
+                        return (
+                          <div key={t.id} className="space-y-1">
+                            <Link
+                              to="/tasks/$taskId" params={{ taskId: t.id }}
+                              className="flex items-center justify-between p-2 rounded border border-border hover:bg-accent transition-colors"
+                            >
+                              <div>
+                                <div className="text-sm font-medium flex items-center gap-2">
+                                  {t.title}
+                                  {tb.length > 0 && (
+                                    <Badge variant="destructive" className="text-[10px] px-1.5 py-0 gap-1">
+                                      <AlertCircle className="h-3 w-3" /> {tb.length} عائق
+                                    </Badge>
+                                  )}
+                                </div>
+                                <div className="text-xs text-muted-foreground">
+                                  {t.assignee_name ?? "غير مسند"}
+                                </div>
+                              </div>
+                              <TaskStatusBadge status={t.status} />
+                            </Link>
+                            {tb.length > 0 && (
+                              <div className="ms-4 space-y-1">
+                                {tb.map((b) => (
+                                  <div key={b.id} className="text-xs p-2 rounded border border-destructive/40 bg-destructive/5">
+                                    <div className="text-muted-foreground mb-0.5">
+                                      {b.reporter_name ?? "—"} • {new Date(b.created_at).toLocaleDateString("ar-EG")}
+                                    </div>
+                                    <p className="whitespace-pre-wrap break-words text-foreground">{b.reason}</p>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
                           </div>
-                          <TaskStatusBadge status={t.status} />
-                        </Link>
-                      ))}
+                        );
+                      })}
                     </div>
                   )}
                 </CardContent>
