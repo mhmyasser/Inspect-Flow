@@ -1,0 +1,121 @@
+{
+  "version": 1,
+  "sdk_version": "0.20.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://rlihimeyiidbdfkdrecd.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "work-wave-mcp",
+      "version": "0.1.0",
+      "title": "Work Wave — Project Management"
+    },
+    "tools": [
+      {
+        "name": "list_projects",
+        "title": "List projects",
+        "description": "List projects visible to the signed-in user (RLS applies).",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "status": {
+              "description": "Optional project status filter.",
+              "type": "string",
+              "enum": [
+                "active",
+                "on_hold",
+                "completed",
+                "cancelled"
+              ]
+            },
+            "limit": {
+              "description": "Max rows to return (default 25).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_my_tasks",
+        "title": "List my tasks",
+        "description": "List tasks assigned to the signed-in user (RLS applies).",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "status": {
+              "description": "Optional task status filter.",
+              "type": "string",
+              "enum": [
+                "pending",
+                "in_progress",
+                "blocked",
+                "completed",
+                "cancelled"
+              ]
+            },
+            "limit": {
+              "description": "Max rows (default 25).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "report_blocker",
+        "title": "Report a blocker",
+        "description": "Report a blocker on a task assigned to the signed-in user. Creates a blocker row and marks the task as blocked (subject to RLS).",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "task_id": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+              "description": "Task ID the blocker relates to."
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 2000,
+              "description": "Short description of the blocker."
+            }
+          },
+          "required": [
+            "task_id",
+            "reason"
+          ]
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}

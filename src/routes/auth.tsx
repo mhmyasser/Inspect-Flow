@@ -10,6 +10,9 @@ import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
+  validateSearch: (s: Record<string, unknown>) => ({
+    next: typeof s.next === "string" && s.next.startsWith("/") && !s.next.startsWith("//") ? s.next : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "تسجيل الدخول — إدارة المشاريع التجارية" },
@@ -26,12 +29,19 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
 });
 
+
 function AuthPage() {
   const navigate = useNavigate();
+  const { next } = Route.useSearch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [adminExists, setAdminExists] = useState<boolean | null>(null);
+
+  const redirectAfterAuth = () => {
+    if (next) window.location.href = next;
+    else navigate({ to: "/dashboard", replace: true });
+  };
 
   useEffect(() => {
     // Check if any admin exists; if not, show setup form
@@ -42,9 +52,12 @@ function AuthPage() {
 
     // Redirect if already signed in
     void supabase.auth.getUser().then(({ data }) => {
-      if (data.user) navigate({ to: "/dashboard", replace: true });
+      if (data.user) {
+        if (next) window.location.href = next;
+        else navigate({ to: "/dashboard", replace: true });
+      }
     });
-  }, [navigate]);
+  }, [navigate, next]);
 
   async function handleSignIn(e: React.FormEvent) {
     e.preventDefault();
@@ -56,7 +69,7 @@ function AuthPage() {
       return;
     }
     toast.success("تم تسجيل الدخول بنجاح");
-    navigate({ to: "/dashboard", replace: true });
+    redirectAfterAuth();
   }
 
   async function handleBootstrap(e: React.FormEvent) {
@@ -73,11 +86,12 @@ function AuthPage() {
       toast.success("تم إنشاء حساب المدير. جاري تسجيل الدخول...");
       const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
       if (error) throw error;
-      navigate({ to: "/dashboard", replace: true });
+      redirectAfterAuth();
     } catch (err) {
       const msg = err instanceof Error ? err.message : "حدث خطأ";
       toast.error(msg);
     } finally {
+
       setLoading(false);
     }
   }
