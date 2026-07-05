@@ -118,8 +118,9 @@ export const Route = createFileRoute("/api/public/notifications/dispatch")({
                   from: FROM_EMAIL,
                   to: [profile.email],
                   subject: n.subject,
-                  html: `<div dir="rtl" style="font-family:Arial,sans-serif"><p>${n.body.replace(/\n/g, "<br>")}</p></div>`,
+                  html: `<div dir="rtl" style="font-family:Arial,sans-serif"><p>${escapeHtml(n.body).replace(/\n/g, "<br>")}</p></div>`,
                 }),
+
               });
               if (!r.ok) throw new Error(`resend ${r.status}: ${await r.text()}`);
             } else if (n.channel === "telegram") {
