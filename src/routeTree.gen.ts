@@ -28,6 +28,7 @@ import { Route as AuthenticatedTasksTaskIdRouteImport } from './routes/_authenti
 import { Route as AuthenticatedProjectsNewRouteImport } from './routes/_authenticated/projects/new'
 import { Route as AuthenticatedProjectsProjectIdRouteImport } from './routes/_authenticated/projects/$projectId'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as ApiPublicSetupBootstrapAdminRouteImport } from './routes/api/public/setup/bootstrap-admin'
 import { Route as ApiPublicSetupAdminExistsRouteImport } from './routes/api/public/setup/admin-exists'
 import { Route as ApiPublicNotificationsDispatchRouteImport } from './routes/api/public/notifications/dispatch'
@@ -134,6 +135,11 @@ const Char91DotmcpChar93InvokeToolToolRoute =
     path: '/.mcp/invoke-tool/$tool',
     getParentRoute: () => rootRouteImport,
   } as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicSetupBootstrapAdminRoute =
   ApiPublicSetupBootstrapAdminRouteImport.update({
     id: '/api/public/setup/bootstrap-admin',
@@ -167,6 +173,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AuthenticatedSettingsRoute
   '/templates': typeof AuthenticatedTemplatesRoute
   '/webhooks': typeof AuthenticatedWebhooksRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRoute
   '/projects/new': typeof AuthenticatedProjectsNewRoute
@@ -190,6 +197,7 @@ export interface FileRoutesByTo {
   '/settings': typeof AuthenticatedSettingsRoute
   '/templates': typeof AuthenticatedTemplatesRoute
   '/webhooks': typeof AuthenticatedWebhooksRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRoute
   '/projects/new': typeof AuthenticatedProjectsNewRoute
@@ -215,6 +223,7 @@ export interface FileRoutesById {
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/templates': typeof AuthenticatedTemplatesRoute
   '/_authenticated/webhooks': typeof AuthenticatedWebhooksRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRoute
   '/_authenticated/projects/new': typeof AuthenticatedProjectsNewRoute
@@ -240,6 +249,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/templates'
     | '/webhooks'
+    | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/projects/$projectId'
     | '/projects/new'
@@ -263,6 +273,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/templates'
     | '/webhooks'
+    | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/projects/$projectId'
     | '/projects/new'
@@ -287,6 +298,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings'
     | '/_authenticated/templates'
     | '/_authenticated/webhooks'
+    | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/_authenticated/projects/$projectId'
     | '/_authenticated/projects/new'
@@ -305,6 +317,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ApiPublicNotificationsDispatchRoute: typeof ApiPublicNotificationsDispatchRoute
   ApiPublicSetupAdminExistsRoute: typeof ApiPublicSetupAdminExistsRoute
@@ -446,6 +459,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/setup/bootstrap-admin': {
       id: '/api/public/setup/bootstrap-admin'
       path: '/api/public/setup/bootstrap-admin'
@@ -510,6 +530,7 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ApiPublicNotificationsDispatchRoute: ApiPublicNotificationsDispatchRoute,
   ApiPublicSetupAdminExistsRoute: ApiPublicSetupAdminExistsRoute,
