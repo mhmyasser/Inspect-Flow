@@ -1,5 +1,16 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+function escapeHtml(s: string): string {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+
+
 // Public endpoint called by pg_cron (or external cron) to:
 // 1. Mark overdue tasks
 // 2. Enqueue escalation notifications
@@ -118,8 +129,9 @@ export const Route = createFileRoute("/api/public/notifications/dispatch")({
                   from: FROM_EMAIL,
                   to: [profile.email],
                   subject: n.subject,
-                  html: `<div dir="rtl" style="font-family:Arial,sans-serif"><p>${n.body.replace(/\n/g, "<br>")}</p></div>`,
+                  html: `<div dir="rtl" style="font-family:Arial,sans-serif"><p>${escapeHtml(n.body).replace(/\n/g, "<br>")}</p></div>`,
                 }),
+
               });
               if (!r.ok) throw new Error(`resend ${r.status}: ${await r.text()}`);
             } else if (n.channel === "telegram") {
