@@ -43,6 +43,7 @@ export const createEmployee = createServerFn({ method: "POST" })
 const UpdateEmployeeSchema = z.object({
   id: z.string().uuid(),
   fullName: z.string().min(1).max(100),
+  email: z.string().email().max(255),
   phone: z.string().max(30).optional().nullable(),
   telegramChatId: z.string().max(50).optional().nullable(),
   isActive: z.boolean(),
@@ -57,6 +58,7 @@ export const updateEmployee = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error: pErr } = await supabaseAdmin.from("profiles").update({
       full_name: data.fullName,
+      email: data.email,
       phone: data.phone ?? null,
       telegram_chat_id: data.telegramChatId ?? null,
       is_active: data.isActive,
@@ -65,8 +67,9 @@ export const updateEmployee = createServerFn({ method: "POST" })
     // role replace
     await supabaseAdmin.from("user_roles").delete().eq("user_id", data.id);
     await supabaseAdmin.from("user_roles").insert({ user_id: data.id, role: data.role });
-    // ban/unban via auth admin
+    // update email + ban/unban via auth admin
     await supabaseAdmin.auth.admin.updateUserById(data.id, {
+      email: data.email,
       ban_duration: data.isActive ? "none" : "876000h",
     });
     return { ok: true };

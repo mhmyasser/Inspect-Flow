@@ -201,6 +201,7 @@ function EditEmployeeDialog({ employee, onClose, onSaved }: { employee: Employee
   const update = useServerFn(updateEmployee);
   const [form, setForm] = useState({
     fullName: employee.full_name,
+    email: employee.email,
     phone: employee.phone ?? "",
     telegramChatId: employee.telegram_chat_id ?? "",
     isActive: employee.is_active,
@@ -210,6 +211,7 @@ function EditEmployeeDialog({ employee, onClose, onSaved }: { employee: Employee
     mutationFn: () => update({ data: {
       id: employee.id,
       fullName: form.fullName,
+      email: form.email,
       phone: form.phone || null,
       telegramChatId: form.telegramChatId || null,
       isActive: form.isActive,
@@ -229,6 +231,10 @@ function EditEmployeeDialog({ employee, onClose, onSaved }: { employee: Employee
           <div className="space-y-2">
             <Label>الاسم الكامل</Label>
             <Input required value={form.fullName} onChange={(e) => setForm({ ...form, fullName: e.target.value })} />
+          </div>
+          <div className="space-y-2">
+            <Label>البريد الإلكتروني</Label>
+            <Input required type="email" dir="ltr" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
           </div>
           <div className="space-y-2">
             <Label>رقم الموبايل</Label>
