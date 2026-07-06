@@ -43,6 +43,7 @@ export const createEmployee = createServerFn({ method: "POST" })
 const UpdateEmployeeSchema = z.object({
   id: z.string().uuid(),
   fullName: z.string().min(1).max(100),
+  email: z.string().email().max(255),
   phone: z.string().max(30).optional().nullable(),
   telegramChatId: z.string().max(50).optional().nullable(),
   isActive: z.boolean(),
