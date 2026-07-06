@@ -90,7 +90,8 @@ function SettingsPage() {
             </div>
             <div className="space-y-2">
               <Label>البريد الإلكتروني</Label>
-              <Input dir="ltr" value={user?.email ?? ""} disabled />
+              <Input required type="email" dir="ltr" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+              <p className="text-xs text-muted-foreground">عند تغيير البريد سيتم إرسال رابط تأكيد إلى العنوان الجديد.</p>
             </div>
             <div className="space-y-2">
               <Label>رقم الموبايل</Label>
