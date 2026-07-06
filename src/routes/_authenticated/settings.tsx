@@ -28,25 +28,36 @@ function SettingsPage() {
     },
   });
 
-  const [form, setForm] = useState({ fullName: "", phone: "", telegramChatId: "" });
+  const [form, setForm] = useState({ fullName: "", email: "", phone: "", telegramChatId: "" });
   useEffect(() => {
     if (profile) setForm({
       fullName: profile.full_name,
+      email: profile.email ?? user?.email ?? "",
       phone: profile.phone ?? "",
       telegramChatId: profile.telegram_chat_id ?? "",
     });
-  }, [profile]);
+  }, [profile, user?.email]);
 
   const updateM = useMutation({
     mutationFn: async () => {
+      const currentEmail = user?.email ?? "";
+      if (form.email && form.email !== currentEmail) {
+        const { error: authErr } = await supabase.auth.updateUser({ email: form.email });
+        if (authErr) throw authErr;
+      }
       const { error } = await supabase.from("profiles").update({
         full_name: form.fullName,
+        email: form.email || null,
         phone: form.phone || null,
         telegram_chat_id: form.telegramChatId || null,
       }).eq("id", user!.id);
       if (error) throw error;
     },
-    onSuccess: () => { toast.success("تم الحفظ"); qc.invalidateQueries({ queryKey: ["my-profile"] }); },
+    onSuccess: () => {
+      const changedEmail = form.email && form.email !== user?.email;
+      toast.success(changedEmail ? "تم الحفظ. تحقق من بريدك الجديد لتأكيد التغيير." : "تم الحفظ");
+      qc.invalidateQueries({ queryKey: ["my-profile"] });
+    },
     onError: (err: Error) => toast.error(err.message),
   });
 
