@@ -58,6 +58,7 @@ export const updateEmployee = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error: pErr } = await supabaseAdmin.from("profiles").update({
       full_name: data.fullName,
+      email: data.email,
       phone: data.phone ?? null,
       telegram_chat_id: data.telegramChatId ?? null,
       is_active: data.isActive,
