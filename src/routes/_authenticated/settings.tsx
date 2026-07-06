@@ -47,7 +47,7 @@ function SettingsPage() {
       }
       const { error } = await supabase.from("profiles").update({
         full_name: form.fullName,
-        email: form.email || null,
+        email: form.email,
         phone: form.phone || null,
         telegram_chat_id: form.telegramChatId || null,
       }).eq("id", user!.id);
