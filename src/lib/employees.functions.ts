@@ -67,8 +67,9 @@ export const updateEmployee = createServerFn({ method: "POST" })
     // role replace
     await supabaseAdmin.from("user_roles").delete().eq("user_id", data.id);
     await supabaseAdmin.from("user_roles").insert({ user_id: data.id, role: data.role });
-    // ban/unban via auth admin
+    // update email + ban/unban via auth admin
     await supabaseAdmin.auth.admin.updateUserById(data.id, {
+      email: data.email,
       ban_duration: data.isActive ? "none" : "876000h",
     });
     return { ok: true };
