@@ -58,6 +58,149 @@ export type Database = {
           },
         ]
       }
+      contact_attachments: {
+        Row: {
+          contact_id: string
+          created_at: string
+          file_name: string
+          file_path: string
+          file_size: number | null
+          id: string
+          mime_type: string | null
+          uploaded_by: string | null
+        }
+        Insert: {
+          contact_id: string
+          created_at?: string
+          file_name: string
+          file_path: string
+          file_size?: number | null
+          id?: string
+          mime_type?: string | null
+          uploaded_by?: string | null
+        }
+        Update: {
+          contact_id?: string
+          created_at?: string
+          file_name?: string
+          file_path?: string
+          file_size?: number | null
+          id?: string
+          mime_type?: string | null
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_attachments_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contact_transactions: {
+        Row: {
+          amount: number
+          contact_id: string
+          created_at: string
+          created_by: string | null
+          currency: string
+          description: string | null
+          id: string
+          kind: Database["public"]["Enums"]["contact_txn_kind"]
+          occurred_on: string
+          project_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          contact_id: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          description?: string | null
+          id?: string
+          kind: Database["public"]["Enums"]["contact_txn_kind"]
+          occurred_on?: string
+          project_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          contact_id?: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          description?: string | null
+          id?: string
+          kind?: Database["public"]["Enums"]["contact_txn_kind"]
+          occurred_on?: string
+          project_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contact_transactions_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contact_transactions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contacts: {
+        Row: {
+          address: string | null
+          company: string | null
+          created_at: string
+          created_by: string | null
+          email: string | null
+          id: string
+          kind: Database["public"]["Enums"]["contact_kind"]
+          name: string
+          notes: string | null
+          phone: string | null
+          tax_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          company?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          id?: string
+          kind: Database["public"]["Enums"]["contact_kind"]
+          name: string
+          notes?: string | null
+          phone?: string | null
+          tax_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          company?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          id?: string
+          kind?: Database["public"]["Enums"]["contact_kind"]
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          tax_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           body: string | null
@@ -287,6 +430,7 @@ export type Database = {
           collected_amount: number | null
           created_at: string
           created_by: string | null
+          customer_id: string | null
           description: string | null
           expected_end_date: string | null
           id: string
@@ -295,6 +439,7 @@ export type Database = {
           purchase_cost: number | null
           start_date: string
           status: Database["public"]["Enums"]["project_status"]
+          supplier_id: string | null
           updated_at: string
         }
         Insert: {
@@ -302,6 +447,7 @@ export type Database = {
           collected_amount?: number | null
           created_at?: string
           created_by?: string | null
+          customer_id?: string | null
           description?: string | null
           expected_end_date?: string | null
           id?: string
@@ -310,6 +456,7 @@ export type Database = {
           purchase_cost?: number | null
           start_date?: string
           status?: Database["public"]["Enums"]["project_status"]
+          supplier_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -317,6 +464,7 @@ export type Database = {
           collected_amount?: number | null
           created_at?: string
           created_by?: string | null
+          customer_id?: string | null
           description?: string | null
           expected_end_date?: string | null
           id?: string
@@ -325,9 +473,25 @@ export type Database = {
           purchase_cost?: number | null
           start_date?: string
           status?: Database["public"]["Enums"]["project_status"]
+          supplier_id?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "projects_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "projects_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "contacts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       task_attachments: {
         Row: {
@@ -665,6 +829,14 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "employee"
+      contact_kind: "customer" | "supplier"
+      contact_txn_kind:
+        | "invoice"
+        | "payment"
+        | "receipt"
+        | "credit"
+        | "debit"
+        | "other"
       notification_channel: "email" | "telegram"
       notification_kind:
         | "task_assigned"
@@ -811,6 +983,15 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "employee"],
+      contact_kind: ["customer", "supplier"],
+      contact_txn_kind: [
+        "invoice",
+        "payment",
+        "receipt",
+        "credit",
+        "debit",
+        "other",
+      ],
       notification_channel: ["email", "telegram"],
       notification_kind: [
         "task_assigned",
