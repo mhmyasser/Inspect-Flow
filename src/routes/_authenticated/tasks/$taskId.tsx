@@ -262,69 +262,199 @@ function ReportBlockerButton({ taskId }: { taskId: string }) {
 
 function AddCommentForm({ taskId }: { taskId: string }) {
   const [content, setContent] = useState("");
+  const [mentions, setMentions] = useState<Record<string, string>>({});
+  const [showPicker, setShowPicker] = useState(false);
+  const [pickerQuery, setPickerQuery] = useState("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const add = useServerFn(addTaskComment);
   const qc = useQueryClient();
+  const { data: members = [] } = useQuery({
+    queryKey: ["profiles-mention"],
+    queryFn: async () => {
+      const { data } = await supabase.from("profiles").select("id, full_name").order("full_name");
+      return (data ?? []).filter((p): p is { id: string; full_name: string } => !!p.full_name);
+    },
+    staleTime: 60_000,
+  });
   const m = useMutation({
-    mutationFn: () => add({ data: { taskId, content } }),
-    onSuccess: () => { setContent(""); qc.invalidateQueries({ queryKey: ["task-comments", taskId] }); },
+    mutationFn: () => {
+      const active = Object.entries(mentions)
+        .filter(([, name]) => content.includes(`@${name}`))
+        .map(([id]) => id);
+      return add({ data: { taskId, content, mentions: active } });
+    },
+    onSuccess: () => {
+      setContent(""); setMentions({});
+      qc.invalidateQueries({ queryKey: ["task-comments", taskId] });
+    },
     onError: (err: Error) => toast.error(err.message),
   });
+
+  function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    const val = e.target.value;
+    setContent(val);
+    const caret = e.target.selectionStart ?? val.length;
+    const before = val.slice(0, caret);
+    const match = /@(\S{0,30})$/.exec(before);
+    if (match) { setPickerQuery(match[1]); setShowPicker(true); }
+    else setShowPicker(false);
+  }
+
+  function pick(p: { id: string; full_name: string }) {
+    const ta = textareaRef.current; if (!ta) return;
+    const caret = ta.selectionStart ?? content.length;
+    const before = content.slice(0, caret);
+    const after = content.slice(caret);
+    const newBefore = before.replace(/@\S*$/, `@${p.full_name} `);
+    const next = newBefore + after;
+    setContent(next);
+    setMentions((mp) => ({ ...mp, [p.id]: p.full_name }));
+    setShowPicker(false);
+    setTimeout(() => {
+      ta.focus();
+      const pos = newBefore.length;
+      ta.setSelectionRange(pos, pos);
+    }, 0);
+  }
+
+  const q = pickerQuery.toLowerCase();
+  const filtered = members
+    .filter((mm) => !q || mm.full_name.toLowerCase().includes(q))
+    .slice(0, 6);
+
   return (
-    <form className="flex gap-2 pt-3 border-t border-border" onSubmit={(e) => { e.preventDefault(); if (content.trim()) m.mutate(); }}>
-      <Input placeholder="أضف تعليقاً..." value={content} onChange={(e) => setContent(e.target.value)} maxLength={2000} />
-      <Button type="submit" size="icon" disabled={m.isPending || !content.trim()}>
-        <Send className="h-4 w-4" />
-      </Button>
+    <form
+      className="pt-3 border-t border-border space-y-2"
+      onSubmit={(e) => { e.preventDefault(); if (content.trim()) m.mutate(); }}
+    >
+      <div className="relative">
+        <Textarea
+          ref={textareaRef}
+          placeholder="أضف تعليقاً... (اكتب @ لذكر زميل)"
+          value={content}
+          onChange={handleChange}
+          rows={2}
+          maxLength={2000}
+        />
+        {showPicker && filtered.length > 0 && (
+          <div className="absolute bottom-full mb-1 start-0 z-20 w-64 bg-popover border border-border rounded-md shadow-md max-h-56 overflow-auto">
+            {filtered.map((p) => (
+              <button
+                type="button"
+                key={p.id}
+                onClick={() => pick(p)}
+                className="block w-full text-start px-3 py-2 text-sm hover:bg-accent"
+              >
+                @{p.full_name}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+      <div className="flex justify-end">
+        <Button type="submit" size="sm" disabled={m.isPending || !content.trim()}>
+          {m.isPending ? <Loader2 className="ms-2 h-4 w-4 animate-spin" /> : <Send className="ms-2 h-4 w-4" />}
+          إرسال
+        </Button>
+      </div>
     </form>
   );
 }
 
 function UploadAttachmentForm({ taskId, userId, onUploaded }: { taskId: string; userId: string; onUploaded: () => void }) {
   const [uploading, setUploading] = useState(false);
-  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
+  const [file, setFile] = useState<File | null>(null);
+  const [displayName, setDisplayName] = useState("");
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
     if (!file) return;
     if (file.size > 20 * 1024 * 1024) { toast.error("حجم الملف يتجاوز 20MB"); return; }
     setUploading(true);
     try {
       const path = `${userId}/${taskId}/${Date.now()}-${file.name}`;
-      const { error: upErr } = await supabase.storage.from("task-attachments").upload(path, file);
+      const { error: upErr } = await supabase.storage.from("task-attachments").upload(path, file, {
+        contentType: file.type || undefined,
+      });
       if (upErr) throw upErr;
+      const name = (displayName.trim() || file.name).slice(0, 120);
       const { error: insErr } = await supabase.from("task_attachments").insert({
-        task_id: taskId, file_path: path, file_name: file.name,
+        task_id: taskId, file_path: path, file_name: name,
         file_size: file.size, mime_type: file.type, uploaded_by: userId,
       });
       if (insErr) throw insErr;
       toast.success("تم رفع الملف");
+      setFile(null); setDisplayName("");
       onUploaded();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "فشل الرفع");
     } finally {
       setUploading(false);
-      e.target.value = "";
     }
   }
+
   return (
-    <div className="pt-3 border-t border-border">
-      <Label htmlFor="file" className="cursor-pointer inline-flex items-center gap-2 text-sm text-primary hover:underline">
-        <Paperclip className="h-4 w-4" /> {uploading ? "جاري الرفع..." : "إرفاق ملف (PDF / صورة)"}
-      </Label>
-      <Input id="file" type="file" className="hidden" onChange={handleFile} disabled={uploading} accept=".pdf,image/*" />
-    </div>
+    <form onSubmit={submit} className="pt-3 border-t border-border space-y-2">
+      <Input
+        type="file"
+        accept=".pdf,image/*"
+        onChange={(e) => {
+          const f = e.target.files?.[0] ?? null;
+          setFile(f);
+          if (f) setDisplayName(f.name.replace(/\.[^.]+$/, ""));
+        }}
+        disabled={uploading}
+      />
+      {file && (
+        <>
+          <Input
+            placeholder="اسم العرض للمرفق"
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+            maxLength={120}
+          />
+          <Button type="submit" size="sm" disabled={uploading}>
+            {uploading ? <Loader2 className="ms-2 h-4 w-4 animate-spin" /> : <Paperclip className="ms-2 h-4 w-4" />}
+            رفع المرفق
+          </Button>
+        </>
+      )}
+    </form>
   );
 }
 
-function AttachmentLink({ attachment }: { attachment: { id: string; file_path: string; file_name: string; mime_type: string | null } }) {
-  async function open() {
-    const { data, error } = await supabase.storage.from("task-attachments").createSignedUrl(attachment.file_path, 300);
+function formatSize(bytes: number) {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function AttachmentLink({ attachment }: { attachment: { id: string; file_path: string; file_name: string; file_size: number | null; mime_type: string | null } }) {
+  async function openUrl(download: boolean) {
+    const opts = download ? { download: attachment.file_name } : undefined;
+    const { data, error } = await supabase.storage
+      .from("task-attachments")
+      .createSignedUrl(attachment.file_path, 300, opts);
     if (error || !data) { toast.error("تعذر فتح الملف"); return; }
     window.open(data.signedUrl, "_blank");
   }
+  const isImage = attachment.mime_type?.startsWith("image/");
   return (
-    <button onClick={open} className="flex items-center gap-2 p-2 w-full rounded hover:bg-accent text-start">
-      <FileText className="h-4 w-4 text-muted-foreground" />
-      <span className="text-sm truncate flex-1">{attachment.file_name}</span>
-    </button>
+    <div className="flex items-center gap-2 p-2 rounded border border-border">
+      {isImage ? <ImageIcon className="h-4 w-4 text-muted-foreground shrink-0" /> : <FileText className="h-4 w-4 text-muted-foreground shrink-0" />}
+      <div className="flex-1 min-w-0">
+        <div className="text-sm truncate">{attachment.file_name}</div>
+        {attachment.file_size != null && (
+          <div className="text-xs text-muted-foreground">{formatSize(attachment.file_size)}</div>
+        )}
+      </div>
+      <Button type="button" size="sm" variant="ghost" onClick={() => openUrl(false)} title="عرض">
+        <Eye className="h-4 w-4" />
+      </Button>
+      <Button type="button" size="sm" variant="ghost" onClick={() => openUrl(true)} title="تحميل">
+        <Download className="h-4 w-4" />
+      </Button>
+    </div>
   );
 }
 
