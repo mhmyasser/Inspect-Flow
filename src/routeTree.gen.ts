@@ -29,6 +29,7 @@ import { Route as AuthenticatedProjectsIndexRouteImport } from './routes/_authen
 import { Route as AuthenticatedTasksTaskIdRouteImport } from './routes/_authenticated/tasks/$taskId'
 import { Route as AuthenticatedProjectsNewRouteImport } from './routes/_authenticated/projects/new'
 import { Route as AuthenticatedProjectsProjectIdRouteImport } from './routes/_authenticated/projects/$projectId'
+import { Route as AuthenticatedContactsContactIdRouteImport } from './routes/_authenticated/contacts.$contactId'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as ApiPublicSetupBootstrapAdminRouteImport } from './routes/api/public/setup/bootstrap-admin'
@@ -141,6 +142,12 @@ const AuthenticatedProjectsProjectIdRoute =
     path: '/projects/$projectId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedContactsContactIdRoute =
+  AuthenticatedContactsContactIdRouteImport.update({
+    id: '/contacts/$contactId',
+    path: '/contacts/$contactId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const Char91DotmcpChar93InvokeToolToolRoute =
   Char91DotmcpChar93InvokeToolToolRouteImport.update({
     id: '/.mcp/invoke-tool/$tool',
@@ -189,6 +196,7 @@ export interface FileRoutesByFullPath {
   '/webhooks': typeof AuthenticatedWebhooksRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/contacts/$contactId': typeof AuthenticatedContactsContactIdRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRoute
   '/projects/new': typeof AuthenticatedProjectsNewRoute
   '/tasks/$taskId': typeof AuthenticatedTasksTaskIdRoute
@@ -215,6 +223,7 @@ export interface FileRoutesByTo {
   '/webhooks': typeof AuthenticatedWebhooksRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/contacts/$contactId': typeof AuthenticatedContactsContactIdRoute
   '/projects/$projectId': typeof AuthenticatedProjectsProjectIdRoute
   '/projects/new': typeof AuthenticatedProjectsNewRoute
   '/tasks/$taskId': typeof AuthenticatedTasksTaskIdRoute
@@ -243,6 +252,7 @@ export interface FileRoutesById {
   '/_authenticated/webhooks': typeof AuthenticatedWebhooksRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/_authenticated/contacts/$contactId': typeof AuthenticatedContactsContactIdRoute
   '/_authenticated/projects/$projectId': typeof AuthenticatedProjectsProjectIdRoute
   '/_authenticated/projects/new': typeof AuthenticatedProjectsNewRoute
   '/_authenticated/tasks/$taskId': typeof AuthenticatedTasksTaskIdRoute
@@ -271,6 +281,7 @@ export interface FileRouteTypes {
     | '/webhooks'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/contacts/$contactId'
     | '/projects/$projectId'
     | '/projects/new'
     | '/tasks/$taskId'
@@ -297,6 +308,7 @@ export interface FileRouteTypes {
     | '/webhooks'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/contacts/$contactId'
     | '/projects/$projectId'
     | '/projects/new'
     | '/tasks/$taskId'
@@ -324,6 +336,7 @@ export interface FileRouteTypes {
     | '/_authenticated/webhooks'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/_authenticated/contacts/$contactId'
     | '/_authenticated/projects/$projectId'
     | '/_authenticated/projects/new'
     | '/_authenticated/tasks/$taskId'
@@ -490,6 +503,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProjectsProjectIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/contacts/$contactId': {
+      id: '/_authenticated/contacts/$contactId'
+      path: '/contacts/$contactId'
+      fullPath: '/contacts/$contactId'
+      preLoaderRoute: typeof AuthenticatedContactsContactIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/.mcp/invoke-tool/$tool': {
       id: '/.mcp/invoke-tool/$tool'
       path: '/.mcp/invoke-tool/$tool'
@@ -538,6 +558,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSuppliersRoute: typeof AuthenticatedSuppliersRoute
   AuthenticatedTemplatesRoute: typeof AuthenticatedTemplatesRoute
   AuthenticatedWebhooksRoute: typeof AuthenticatedWebhooksRoute
+  AuthenticatedContactsContactIdRoute: typeof AuthenticatedContactsContactIdRoute
   AuthenticatedProjectsProjectIdRoute: typeof AuthenticatedProjectsProjectIdRoute
   AuthenticatedProjectsNewRoute: typeof AuthenticatedProjectsNewRoute
   AuthenticatedTasksTaskIdRoute: typeof AuthenticatedTasksTaskIdRoute
@@ -554,6 +575,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSuppliersRoute: AuthenticatedSuppliersRoute,
   AuthenticatedTemplatesRoute: AuthenticatedTemplatesRoute,
   AuthenticatedWebhooksRoute: AuthenticatedWebhooksRoute,
+  AuthenticatedContactsContactIdRoute: AuthenticatedContactsContactIdRoute,
   AuthenticatedProjectsProjectIdRoute: AuthenticatedProjectsProjectIdRoute,
   AuthenticatedProjectsNewRoute: AuthenticatedProjectsNewRoute,
   AuthenticatedTasksTaskIdRoute: AuthenticatedTasksTaskIdRoute,
