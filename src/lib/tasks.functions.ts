@@ -118,13 +118,6 @@ export const addTaskComment = createServerFn({ method: "POST" })
         kind: "mention",
       }));
       await supabaseAdmin.from("notifications").insert(inApp);
-      const email = mentions.map((uid) => ({
-        recipient_user_id: uid, channel: "email" as const, kind: "mention" as const,
-        subject: `${author?.full_name ?? "زميل"} ذكرك في تعليق`,
-        body: `${task?.title ? `مهمة: ${task.title}\n\n` : ""}${data.content}`,
-        related_task_id: data.taskId,
-      }));
-      await supabaseAdmin.from("notifications_queue").insert(email);
     }
     return { ok: true };
   });
