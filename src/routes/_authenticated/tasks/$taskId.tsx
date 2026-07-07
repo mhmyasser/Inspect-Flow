@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { updateTaskStatus, addTaskComment, reportBlocker, resolveBlocker } from "@/lib/tasks.functions";
@@ -14,7 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { ArrowLeft, AlertCircle, Loader2, Paperclip, Send, FileText, CheckCircle2, ShieldAlert } from "lucide-react";
+import { ArrowLeft, AlertCircle, Loader2, Paperclip, Send, FileText, Image as ImageIcon, Eye, Download, CheckCircle2, ShieldAlert } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/tasks/$taskId")({
   component: TaskDetailPage,
