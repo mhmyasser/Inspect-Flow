@@ -29,11 +29,6 @@ function AiAssistantPage() {
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
 
-  if (loading) return null;
-  if (role !== "admin") return <Navigate to="/dashboard" />;
-
-
-
   const mut = useMutation({
     mutationFn: (q: string) => ask({ data: { question: q } }),
     onSuccess: (res) => setMessages((m) => [...m, { role: "assistant", content: res.answer }]),
@@ -47,6 +42,9 @@ function AiAssistantPage() {
     setInput("");
     mut.mutate(q);
   }
+
+  if (loading) return null;
+  if (role !== "admin") return <Navigate to="/dashboard" />;
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">

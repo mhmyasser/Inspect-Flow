@@ -95,12 +95,30 @@ export const addTaskComment = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({
     taskId: z.string().uuid(),
     content: z.string().min(1).max(2000),
+    mentions: z.array(z.string().uuid()).max(20).optional(),
   }).parse(d))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase.from("task_comments").insert({
       task_id: data.taskId, author_id: context.userId, content: data.content,
     });
     if (error) throw new Error(error.message);
+
+    const mentions = Array.from(new Set(data.mentions ?? [])).filter((id) => id !== context.userId);
+    if (mentions.length) {
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const { data: task } = await supabaseAdmin.from("tasks").select("title").eq("id", data.taskId).single();
+      const { data: author } = await supabaseAdmin.from("profiles").select("full_name").eq("id", context.userId).single();
+      const link = `/tasks/${data.taskId}`;
+      const preview = data.content.length > 140 ? data.content.slice(0, 140) + "…" : data.content;
+      const inApp = mentions.map((uid) => ({
+        user_id: uid,
+        title: `${author?.full_name ?? "زميل"} ذكرك في تعليق`,
+        body: `${task?.title ? `[${task.title}] ` : ""}${preview}`,
+        link,
+        kind: "mention",
+      }));
+      await supabaseAdmin.from("notifications").insert(inApp);
+    }
     return { ok: true };
   });
 

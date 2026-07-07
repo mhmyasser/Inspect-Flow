@@ -16,6 +16,8 @@ import {
   X,
   Webhook,
   Sparkles,
+  Store,
+  UserSquare,
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
@@ -32,7 +34,9 @@ const NAV: NavItem[] = [
   { to: "/dashboard", label: "لوحة التحكم", icon: LayoutDashboard },
   { to: "/projects", label: "المشاريع", icon: FolderKanban },
   { to: "/my-tasks", label: "مهامي", icon: ListTodo },
-  { to: "/ai-assistant", label: "المساعد الذكي", icon: Sparkles },
+  { to: "/ai-assistant", label: "المساعد الذكي", icon: Sparkles, adminOnly: true },
+  { to: "/customers", label: "العملاء", icon: UserSquare, adminOnly: true },
+  { to: "/suppliers", label: "الموردون", icon: Store, adminOnly: true },
   { to: "/employees", label: "الموظفون", icon: Users, adminOnly: true },
   { to: "/templates", label: "قوالب المراحل", icon: ListChecks, adminOnly: true },
   { to: "/webhooks", label: "Webhooks", icon: Webhook, adminOnly: true },
