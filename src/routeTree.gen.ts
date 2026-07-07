@@ -16,6 +16,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedWebhooksRouteImport } from './routes/_authenticated/webhooks'
 import { Route as AuthenticatedTemplatesRouteImport } from './routes/_authenticated/templates'
+import { Route as AuthenticatedSuppliersRouteImport } from './routes/_authenticated/suppliers'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedMyTasksRouteImport } from './routes/_authenticated/my-tasks'
 import { Route as AuthenticatedEmployeesRouteImport } from './routes/_authenticated/employees'
@@ -66,6 +67,11 @@ const AuthenticatedWebhooksRoute = AuthenticatedWebhooksRouteImport.update({
 const AuthenticatedTemplatesRoute = AuthenticatedTemplatesRouteImport.update({
   id: '/templates',
   path: '/templates',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSuppliersRoute = AuthenticatedSuppliersRouteImport.update({
+  id: '/suppliers',
+  path: '/suppliers',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
@@ -178,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/employees': typeof AuthenticatedEmployeesRoute
   '/my-tasks': typeof AuthenticatedMyTasksRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/suppliers': typeof AuthenticatedSuppliersRoute
   '/templates': typeof AuthenticatedTemplatesRoute
   '/webhooks': typeof AuthenticatedWebhooksRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -203,6 +210,7 @@ export interface FileRoutesByTo {
   '/employees': typeof AuthenticatedEmployeesRoute
   '/my-tasks': typeof AuthenticatedMyTasksRoute
   '/settings': typeof AuthenticatedSettingsRoute
+  '/suppliers': typeof AuthenticatedSuppliersRoute
   '/templates': typeof AuthenticatedTemplatesRoute
   '/webhooks': typeof AuthenticatedWebhooksRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -230,6 +238,7 @@ export interface FileRoutesById {
   '/_authenticated/employees': typeof AuthenticatedEmployeesRoute
   '/_authenticated/my-tasks': typeof AuthenticatedMyTasksRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/suppliers': typeof AuthenticatedSuppliersRoute
   '/_authenticated/templates': typeof AuthenticatedTemplatesRoute
   '/_authenticated/webhooks': typeof AuthenticatedWebhooksRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -257,6 +266,7 @@ export interface FileRouteTypes {
     | '/employees'
     | '/my-tasks'
     | '/settings'
+    | '/suppliers'
     | '/templates'
     | '/webhooks'
     | '/.lovable/oauth/consent'
@@ -282,6 +292,7 @@ export interface FileRouteTypes {
     | '/employees'
     | '/my-tasks'
     | '/settings'
+    | '/suppliers'
     | '/templates'
     | '/webhooks'
     | '/.lovable/oauth/consent'
@@ -308,6 +319,7 @@ export interface FileRouteTypes {
     | '/_authenticated/employees'
     | '/_authenticated/my-tasks'
     | '/_authenticated/settings'
+    | '/_authenticated/suppliers'
     | '/_authenticated/templates'
     | '/_authenticated/webhooks'
     | '/.lovable/oauth/consent'
@@ -385,6 +397,13 @@ declare module '@tanstack/react-router' {
       path: '/templates'
       fullPath: '/templates'
       preLoaderRoute: typeof AuthenticatedTemplatesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/suppliers': {
+      id: '/_authenticated/suppliers'
+      path: '/suppliers'
+      fullPath: '/suppliers'
+      preLoaderRoute: typeof AuthenticatedSuppliersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/settings': {
@@ -516,6 +535,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedEmployeesRoute: typeof AuthenticatedEmployeesRoute
   AuthenticatedMyTasksRoute: typeof AuthenticatedMyTasksRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedSuppliersRoute: typeof AuthenticatedSuppliersRoute
   AuthenticatedTemplatesRoute: typeof AuthenticatedTemplatesRoute
   AuthenticatedWebhooksRoute: typeof AuthenticatedWebhooksRoute
   AuthenticatedProjectsProjectIdRoute: typeof AuthenticatedProjectsProjectIdRoute
@@ -531,6 +551,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedEmployeesRoute: AuthenticatedEmployeesRoute,
   AuthenticatedMyTasksRoute: AuthenticatedMyTasksRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedSuppliersRoute: AuthenticatedSuppliersRoute,
   AuthenticatedTemplatesRoute: AuthenticatedTemplatesRoute,
   AuthenticatedWebhooksRoute: AuthenticatedWebhooksRoute,
   AuthenticatedProjectsProjectIdRoute: AuthenticatedProjectsProjectIdRoute,
