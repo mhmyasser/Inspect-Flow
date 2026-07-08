@@ -27,7 +27,10 @@ function NewProjectPage() {
   const [form, setForm] = useState({
     name: "",
     description: "",
-    clientName: "",
+    customerName: "",
+    customerId: "" as string,
+    supplierName: "",
+    supplierId: "" as string,
     projectType: "tender" as "tender" | "direct",
     templateId: "",
     startDate: new Date().toISOString().slice(0, 10),
@@ -54,11 +57,16 @@ function NewProjectPage() {
 
   const mutation = useMutation({
     mutationFn: () => create({ data: {
-      ...form,
+      name: form.name,
       description: form.description || null,
-      clientName: form.clientName || null,
-      expectedEndDate: form.expectedEndDate || null,
+      customerName: form.customerName || null,
+      customerId: form.customerId || null,
+      supplierName: form.supplierName || null,
+      supplierId: form.supplierId || null,
+      projectType: form.projectType,
       templateId: form.templateId || null,
+      startDate: form.startDate,
+      expectedEndDate: form.expectedEndDate || null,
     }}),
     onSuccess: (res) => {
       toast.success("تم إنشاء المشروع");
