@@ -6,11 +6,34 @@ const CreateProjectSchema = z.object({
   name: z.string().min(1).max(200),
   description: z.string().max(2000).optional().nullable(),
   clientName: z.string().max(200).optional().nullable(),
+  customerName: z.string().max(200).optional().nullable(),
+  customerId: z.string().uuid().optional().nullable(),
+  supplierName: z.string().max(200).optional().nullable(),
+  supplierId: z.string().uuid().optional().nullable(),
   projectType: z.enum(["tender", "direct"]),
   templateId: z.string().uuid().optional().nullable(),
   startDate: z.string(),
   expectedEndDate: z.string().optional().nullable(),
 });
+
+async function resolveContact(
+  supabaseAdmin: Awaited<ReturnType<typeof import("@/integrations/supabase/client.server").getAdmin>> | typeof import("@/integrations/supabase/client.server")["supabaseAdmin"],
+  kind: "customer" | "supplier",
+  id: string | null | undefined,
+  name: string | null | undefined,
+  createdBy: string,
+): Promise<string | null> {
+  if (id) return id;
+  const trimmed = (name ?? "").trim();
+  if (!trimmed) return null;
+  const { data: existing } = await supabaseAdmin.from("contacts")
+    .select("id").eq("kind", kind).ilike("name", trimmed).limit(1).maybeSingle();
+  if (existing) return existing.id;
+  const { data: inserted, error } = await supabaseAdmin.from("contacts")
+    .insert({ kind, name: trimmed, created_by: createdBy }).select("id").single();
+  if (error) throw new Error(error.message);
+  return inserted.id;
+}
 
 export const createProject = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
