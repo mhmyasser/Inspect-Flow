@@ -844,6 +844,7 @@ export type Database = {
         | "task_overdue"
         | "task_escalation"
         | "blocker_reported"
+        | "mention"
       notification_status: "pending" | "sent" | "failed"
       project_status: "active" | "completed" | "cancelled" | "on_hold"
       project_type: "tender" | "direct"
@@ -999,6 +1000,7 @@ export const Constants = {
         "task_overdue",
         "task_escalation",
         "blocker_reported",
+        "mention",
       ],
       notification_status: ["pending", "sent", "failed"],
       project_status: ["active", "completed", "cancelled", "on_hold"],
