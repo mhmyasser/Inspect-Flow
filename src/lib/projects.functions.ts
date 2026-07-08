@@ -6,6 +6,10 @@ const CreateProjectSchema = z.object({
   name: z.string().min(1).max(200),
   description: z.string().max(2000).optional().nullable(),
   clientName: z.string().max(200).optional().nullable(),
+  customerName: z.string().max(200).optional().nullable(),
+  customerId: z.string().uuid().optional().nullable(),
+  supplierName: z.string().max(200).optional().nullable(),
+  supplierId: z.string().uuid().optional().nullable(),
   projectType: z.enum(["tender", "direct"]),
   templateId: z.string().uuid().optional().nullable(),
   startDate: z.string(),
@@ -20,10 +24,33 @@ export const createProject = createServerFn({ method: "POST" })
     if (!isAdmin) throw new Error("صلاحيات غير كافية");
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const resolveContact = async (
+      kind: "customer" | "supplier",
+      id: string | null | undefined,
+      name: string | null | undefined,
+    ): Promise<string | null> => {
+      if (id) return id;
+      const trimmed = (name ?? "").trim();
+      if (!trimmed) return null;
+      const { data: existing } = await supabaseAdmin.from("contacts")
+        .select("id").eq("kind", kind).ilike("name", trimmed).limit(1).maybeSingle();
+      if (existing) return existing.id;
+      const { data: inserted, error: cErr } = await supabaseAdmin.from("contacts")
+        .insert({ kind, name: trimmed, created_by: context.userId }).select("id").single();
+      if (cErr) throw new Error(cErr.message);
+      return inserted.id;
+    };
+
+    const customerId = await resolveContact("customer", data.customerId, data.customerName ?? data.clientName);
+    const supplierId = await resolveContact("supplier", data.supplierId, data.supplierName);
+
     const { data: project, error } = await supabaseAdmin.from("projects").insert({
       name: data.name,
       description: data.description ?? null,
-      client_name: data.clientName ?? null,
+      client_name: (data.customerName ?? data.clientName) ?? null,
+      customer_id: customerId,
+      supplier_id: supplierId,
       project_type: data.projectType,
       start_date: data.startDate,
       expected_end_date: data.expectedEndDate ?? null,

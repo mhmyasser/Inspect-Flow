@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { createProject } from "@/lib/projects.functions";
+import { ContactAutocomplete } from "@/components/contacts/contact-autocomplete";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,7 +27,10 @@ function NewProjectPage() {
   const [form, setForm] = useState({
     name: "",
     description: "",
-    clientName: "",
+    customerName: "",
+    customerId: "" as string,
+    supplierName: "",
+    supplierId: "" as string,
     projectType: "tender" as "tender" | "direct",
     templateId: "",
     startDate: new Date().toISOString().slice(0, 10),
@@ -53,11 +57,16 @@ function NewProjectPage() {
 
   const mutation = useMutation({
     mutationFn: () => create({ data: {
-      ...form,
+      name: form.name,
       description: form.description || null,
-      clientName: form.clientName || null,
-      expectedEndDate: form.expectedEndDate || null,
+      customerName: form.customerName || null,
+      customerId: form.customerId || null,
+      supplierName: form.supplierName || null,
+      supplierId: form.supplierId || null,
+      projectType: form.projectType,
       templateId: form.templateId || null,
+      startDate: form.startDate,
+      expectedEndDate: form.expectedEndDate || null,
     }}),
     onSuccess: (res) => {
       toast.success("تم إنشاء المشروع");
@@ -79,9 +88,25 @@ function NewProjectPage() {
               <Label>اسم المشروع</Label>
               <Input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
             </div>
-            <div className="space-y-2">
-              <Label>العميل</Label>
-              <Input value={form.clientName} onChange={(e) => setForm({ ...form, clientName: e.target.value })} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>العميل</Label>
+                <ContactAutocomplete
+                  kind="customer"
+                  value={form.customerName}
+                  onChange={(name, id) => setForm({ ...form, customerName: name, customerId: id ?? "" })}
+                  placeholder="ابحث أو أدخل اسمًا جديدًا"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>المورد</Label>
+                <ContactAutocomplete
+                  kind="supplier"
+                  value={form.supplierName}
+                  onChange={(name, id) => setForm({ ...form, supplierName: name, supplierId: id ?? "" })}
+                  placeholder="ابحث أو أدخل اسمًا جديدًا"
+                />
+              </div>
             </div>
             <div className="space-y-2">
               <Label>وصف المشروع</Label>

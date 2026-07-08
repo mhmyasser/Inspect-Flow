@@ -118,6 +118,18 @@ export const addTaskComment = createServerFn({ method: "POST" })
         kind: "mention",
       }));
       await supabaseAdmin.from("notifications").insert(inApp);
+
+      const subject = `${author?.full_name ?? "زميل"} ذكرك في تعليق`;
+      const bodyText = `${task?.title ? `في المهمة "${task.title}":\n\n` : ""}${data.content}`;
+      const queueRows = mentions.flatMap((uid) => ([
+        { recipient_user_id: uid, channel: "email" as const, kind: "mention" as const,
+          subject, body: bodyText, related_task_id: data.taskId },
+        { recipient_user_id: uid, channel: "telegram" as const, kind: "mention" as const,
+          subject: "💬 تم ذكرك في تعليق",
+          body: `💬 ${author?.full_name ?? "زميل"} ذكرك${task?.title ? ` في مهمة "${task.title}"` : ""}:\n\n${data.content}`,
+          related_task_id: data.taskId },
+      ]));
+      await supabaseAdmin.from("notifications_queue").insert(queueRows);
     }
     return { ok: true };
   });
