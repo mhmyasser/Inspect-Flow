@@ -88,9 +88,25 @@ function NewProjectPage() {
               <Label>اسم المشروع</Label>
               <Input required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
             </div>
-            <div className="space-y-2">
-              <Label>العميل</Label>
-              <Input value={form.clientName} onChange={(e) => setForm({ ...form, clientName: e.target.value })} />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>العميل</Label>
+                <ContactAutocomplete
+                  kind="customer"
+                  value={form.customerName}
+                  onChange={(name, id) => setForm({ ...form, customerName: name, customerId: id ?? "" })}
+                  placeholder="ابحث أو أدخل اسمًا جديدًا"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>المورد</Label>
+                <ContactAutocomplete
+                  kind="supplier"
+                  value={form.supplierName}
+                  onChange={(name, id) => setForm({ ...form, supplierName: name, supplierId: id ?? "" })}
+                  placeholder="ابحث أو أدخل اسمًا جديدًا"
+                />
+              </div>
             </div>
             <div className="space-y-2">
               <Label>وصف المشروع</Label>
