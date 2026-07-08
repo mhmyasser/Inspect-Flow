@@ -17,7 +17,7 @@ const CreateProjectSchema = z.object({
 });
 
 async function resolveContact(
-  supabaseAdmin: Awaited<ReturnType<typeof import("@/integrations/supabase/client.server").getAdmin>> | typeof import("@/integrations/supabase/client.server")["supabaseAdmin"],
+  supabaseAdmin: typeof import("@/integrations/supabase/client.server")["supabaseAdmin"],
   kind: "customer" | "supplier",
   id: string | null | undefined,
   name: string | null | undefined,
