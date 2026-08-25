@@ -28,6 +28,13 @@ export const Route = createFileRoute("/_authenticated/contacts/$contactId")({
 
 type TxnKind = "invoice" | "payment" | "receipt" | "credit" | "debit" | "other";
 
+export const DEFAULT_CURRENCY = "EGP";
+
+export const CURRENCY_LABEL: Record<string, string> = {
+  EGP: "ج.م",
+  USD: "$",
+};
+
 const TXN_LABEL: Record<TxnKind, string> = {
   invoice: "فاتورة",
   payment: "دفعة صادرة",
