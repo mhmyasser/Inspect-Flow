@@ -24,6 +24,19 @@ import { toast } from "sonner";
 import { Plus, Trash2, Loader2, ArrowUp, ArrowDown, Pencil } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/templates")({
+  head: () => ({
+    meta: [
+      { title: "قوالب سير العمل — إدارة المشاريع التجارية" },
+      { name: "description", content: "إنشاء وتخصيص قوالب مراحل تنفيذ المشاريع." },
+      { property: "og:title", content: "قوالب سير العمل — إدارة المشاريع التجارية" },
+      { property: "og:description", content: "إنشاء وتخصيص قوالب مراحل تنفيذ المشاريع." },
+      { property: "og:url", content: "https://inspect-flow-master.lovable.app/templates" },
+      { name: "twitter:title", content: "قوالب سير العمل — إدارة المشاريع التجارية" },
+      { name: "twitter:description", content: "إنشاء وتخصيص قوالب مراحل تنفيذ المشاريع." },
+      { name: "robots", content: "noindex,nofollow" },
+    ],
+    links: [{ rel: "canonical", href: "https://inspect-flow-master.lovable.app/templates" }],
+  }),
   component: TemplatesPage,
 });
 

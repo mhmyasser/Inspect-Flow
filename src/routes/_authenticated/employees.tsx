@@ -26,6 +26,19 @@ import { useAuth } from "@/hooks/use-auth";
 import { useEffect } from "react";
 
 export const Route = createFileRoute("/_authenticated/employees")({
+  head: () => ({
+    meta: [
+      { title: "إدارة الموظفين — إدارة المشاريع التجارية" },
+      { name: "description", content: "إضافة وتعديل وحذف حسابات الموظفين وصلاحياتهم." },
+      { property: "og:title", content: "إدارة الموظفين — إدارة المشاريع التجارية" },
+      { property: "og:description", content: "إضافة وتعديل وحذف حسابات الموظفين وصلاحياتهم." },
+      { property: "og:url", content: "https://inspect-flow-master.lovable.app/employees" },
+      { name: "twitter:title", content: "إدارة الموظفين — إدارة المشاريع التجارية" },
+      { name: "twitter:description", content: "إضافة وتعديل وحذف حسابات الموظفين وصلاحياتهم." },
+      { name: "robots", content: "noindex,nofollow" },
+    ],
+    links: [{ rel: "canonical", href: "https://inspect-flow-master.lovable.app/employees" }],
+  }),
   component: EmployeesPage,
 });
 

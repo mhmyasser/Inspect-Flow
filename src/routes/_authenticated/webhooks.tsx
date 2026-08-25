@@ -17,6 +17,19 @@ import { Plus, Trash2, Send } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/webhooks")({
+  head: () => ({
+    meta: [
+      { title: "Webhooks والتكاملات — إدارة المشاريع التجارية" },
+      { name: "description", content: "تسجيل وإدارة روابط الأحداث الخارجية للمشاريع والمهام." },
+      { property: "og:title", content: "Webhooks والتكاملات — إدارة المشاريع التجارية" },
+      { property: "og:description", content: "تسجيل وإدارة روابط الأحداث الخارجية للمشاريع والمهام." },
+      { property: "og:url", content: "https://inspect-flow-master.lovable.app/webhooks" },
+      { name: "twitter:title", content: "Webhooks والتكاملات — إدارة المشاريع التجارية" },
+      { name: "twitter:description", content: "تسجيل وإدارة روابط الأحداث الخارجية للمشاريع والمهام." },
+      { name: "robots", content: "noindex,nofollow" },
+    ],
+    links: [{ rel: "canonical", href: "https://inspect-flow-master.lovable.app/webhooks" }],
+  }),
   component: WebhooksPage,
 });
 

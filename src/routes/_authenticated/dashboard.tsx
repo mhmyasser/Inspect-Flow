@@ -16,6 +16,19 @@ import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
+  head: () => ({
+    meta: [
+      { title: "لوحة القيادة التنفيذية — إدارة المشاريع التجارية" },
+      { name: "description", content: "متابعة لحظية لمؤشرات الأداء والمشاريع والمهام المتأخرة والعوائق التشغيلية." },
+      { property: "og:title", content: "لوحة القيادة التنفيذية — إدارة المشاريع التجارية" },
+      { property: "og:description", content: "متابعة لحظية لمؤشرات الأداء والمشاريع والمهام المتأخرة والعوائق التشغيلية." },
+      { property: "og:url", content: "https://inspect-flow-master.lovable.app/dashboard" },
+      { name: "twitter:title", content: "لوحة القيادة التنفيذية — إدارة المشاريع التجارية" },
+      { name: "twitter:description", content: "متابعة لحظية لمؤشرات الأداء والمشاريع والمهام المتأخرة والعوائق التشغيلية." },
+      { name: "robots", content: "noindex,nofollow" },
+    ],
+    links: [{ rel: "canonical", href: "https://inspect-flow-master.lovable.app/dashboard" }],
+  }),
   component: DashboardPage,
 });
 

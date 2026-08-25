@@ -11,6 +11,19 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/settings")({
+  head: () => ({
+    meta: [
+      { title: "الملف الشخصي والإعدادات — إدارة المشاريع التجارية" },
+      { name: "description", content: "تحديث بياناتك الشخصية وبريدك الإلكتروني وقنوات التنبيه." },
+      { property: "og:title", content: "الملف الشخصي والإعدادات — إدارة المشاريع التجارية" },
+      { property: "og:description", content: "تحديث بياناتك الشخصية وبريدك الإلكتروني وقنوات التنبيه." },
+      { property: "og:url", content: "https://inspect-flow-master.lovable.app/settings" },
+      { name: "twitter:title", content: "الملف الشخصي والإعدادات — إدارة المشاريع التجارية" },
+      { name: "twitter:description", content: "تحديث بياناتك الشخصية وبريدك الإلكتروني وقنوات التنبيه." },
+      { name: "robots", content: "noindex,nofollow" },
+    ],
+    links: [{ rel: "canonical", href: "https://inspect-flow-master.lovable.app/settings" }],
+  }),
   component: SettingsPage,
 });
 

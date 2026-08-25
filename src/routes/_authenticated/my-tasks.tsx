@@ -8,6 +8,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Clock, CheckCircle2, AlertCircle, ListTodo } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/my-tasks")({
+  head: () => ({
+    meta: [
+      { title: "مهامي — إدارة المشاريع التجارية" },
+      { name: "description", content: "المهام المسندة إليك مع المواعيد النهائية وحالة التنفيذ." },
+      { property: "og:title", content: "مهامي — إدارة المشاريع التجارية" },
+      { property: "og:description", content: "المهام المسندة إليك مع المواعيد النهائية وحالة التنفيذ." },
+      { property: "og:url", content: "https://inspect-flow-master.lovable.app/my-tasks" },
+      { name: "twitter:title", content: "مهامي — إدارة المشاريع التجارية" },
+      { name: "twitter:description", content: "المهام المسندة إليك مع المواعيد النهائية وحالة التنفيذ." },
+      { name: "robots", content: "noindex,nofollow" },
+    ],
+    links: [{ rel: "canonical", href: "https://inspect-flow-master.lovable.app/my-tasks" }],
+  }),
   component: MyTasksPage,
 });
 
