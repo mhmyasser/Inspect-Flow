@@ -11,7 +11,11 @@ const CreateProjectSchema = z.object({
   supplierName: z.string().max(200).optional().nullable(),
   supplierId: z.string().uuid().optional().nullable(),
   projectType: z.enum(["tender", "direct"]),
-  templateId: z.string().uuid().optional().nullable(),
+  templateId: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => (v && z.string().uuid().safeParse(v).success ? v : null)),
   startDate: z.string(),
   expectedEndDate: z.string().optional().nullable(),
 });
