@@ -262,7 +262,7 @@ function TransactionsCard({
   const [open, setOpen] = useState(false);
   const [kind, setKind] = useState<TxnKind>("invoice");
   const [amount, setAmount] = useState("");
-  const [currency, setCurrency] = useState("SAR");
+  const [currency, setCurrency] = useState(DEFAULT_CURRENCY);
   const [occurredOn, setOccurredOn] = useState(new Date().toISOString().slice(0, 10));
   const [projectId, setProjectId] = useState<string>("none");
   const [description, setDescription] = useState("");
