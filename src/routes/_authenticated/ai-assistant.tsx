@@ -11,6 +11,19 @@ import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/_authenticated/ai-assistant")({
+  head: () => ({
+    meta: [
+      { title: "المساعد الذكي — إدارة المشاريع التجارية" },
+      { name: "description", content: "تحليل بياناتك التشغيلية وتقديم توصيات إدارية فورية." },
+      { property: "og:title", content: "المساعد الذكي — إدارة المشاريع التجارية" },
+      { property: "og:description", content: "تحليل بياناتك التشغيلية وتقديم توصيات إدارية فورية." },
+      { property: "og:url", content: "https://inspect-flow-master.lovable.app/ai-assistant" },
+      { name: "twitter:title", content: "المساعد الذكي — إدارة المشاريع التجارية" },
+      { name: "twitter:description", content: "تحليل بياناتك التشغيلية وتقديم توصيات إدارية فورية." },
+      { name: "robots", content: "noindex,nofollow" },
+    ],
+    links: [{ rel: "canonical", href: "https://inspect-flow-master.lovable.app/ai-assistant" }],
+  }),
   component: AiAssistantPage,
 });
 

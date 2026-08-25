@@ -10,4 +10,4 @@ Disallow: /webhooks
 Disallow: /settings
 Disallow: /ai-assistant
 
-Sitemap: https://work-wave-zen.lovable.app/sitemap.xml
+Sitemap: https://inspect-flow-master.lovable.app/sitemap.xml

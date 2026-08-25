@@ -8,6 +8,19 @@ import { Plus, FolderKanban } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/_authenticated/projects/")({
+  head: () => ({
+    meta: [
+      { title: "قائمة المشاريع — إدارة المشاريع التجارية" },
+      { name: "description", content: "استعرض جميع المشاريع التجارية والمناقصات وحالتها ومراحلها التنفيذية." },
+      { property: "og:title", content: "قائمة المشاريع — إدارة المشاريع التجارية" },
+      { property: "og:description", content: "استعرض جميع المشاريع التجارية والمناقصات وحالتها ومراحلها التنفيذية." },
+      { property: "og:url", content: "https://inspect-flow-master.lovable.app/projects" },
+      { name: "twitter:title", content: "قائمة المشاريع — إدارة المشاريع التجارية" },
+      { name: "twitter:description", content: "استعرض جميع المشاريع التجارية والمناقصات وحالتها ومراحلها التنفيذية." },
+      { name: "robots", content: "noindex,nofollow" },
+    ],
+    links: [{ rel: "canonical", href: "https://inspect-flow-master.lovable.app/projects" }],
+  }),
   component: ProjectsListPage,
 });
 
