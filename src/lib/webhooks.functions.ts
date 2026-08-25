@@ -54,7 +54,7 @@ export const createWebhook = createServerFn({ method: "POST" })
 
 export const toggleWebhook = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ id: z.string().uuid(), active: z.boolean() }).parse(d))
+  .inputValidator((d: unknown) => z.object({ id: z.string().guid(), active: z.boolean() }).parse(d))
   .handler(async ({ data, context }) => {
     await ensureAdmin(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -65,7 +65,7 @@ export const toggleWebhook = createServerFn({ method: "POST" })
 
 export const deleteWebhook = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) => z.object({ id: z.string().guid() }).parse(d))
   .handler(async ({ data, context }) => {
     await ensureAdmin(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -76,7 +76,7 @@ export const deleteWebhook = createServerFn({ method: "POST" })
 
 export const listDeliveries = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ webhookId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) => z.object({ webhookId: z.string().guid() }).parse(d))
   .handler(async ({ data, context }) => {
     await ensureAdmin(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -88,7 +88,7 @@ export const listDeliveries = createServerFn({ method: "GET" })
 
 export const testWebhook = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) => z.object({ id: z.string().guid() }).parse(d))
   .handler(async ({ data, context }) => {
     await ensureAdmin(context.userId);
     const { dispatchWebhookEvent } = await import("@/lib/webhooks.server");

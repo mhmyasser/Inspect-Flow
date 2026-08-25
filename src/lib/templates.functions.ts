@@ -15,7 +15,7 @@ const StageInput = z.object({
 export const upsertTemplate = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({
-    id: z.string().uuid().optional(),
+    id: z.string().guid().optional(),
     name: z.string().min(1).max(200),
     description: z.string().max(1000).optional().nullable(),
     projectType: z.enum(["tender", "direct"]),
@@ -57,7 +57,7 @@ export const upsertTemplate = createServerFn({ method: "POST" })
 
 export const deleteTemplate = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) => z.object({ id: z.string().guid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { data: __adminRow } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "admin").maybeSingle(); const isAdmin = !!__adminRow;
     if (!isAdmin) throw new Error("صلاحيات غير كافية");

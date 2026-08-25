@@ -3,10 +3,10 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
 
 const CreateTaskSchema = z.object({
-  stageId: z.string().uuid(),
+  stageId: z.string().guid(),
   title: z.string().min(1).max(200),
   description: z.string().max(2000).optional().nullable(),
-  assigneeId: z.string().uuid(),
+  assigneeId: z.string().guid(),
   deadline: z.string(),
 });
 
@@ -60,7 +60,7 @@ export const createTask = createServerFn({ method: "POST" })
 export const updateTaskStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({
-    taskId: z.string().uuid(),
+    taskId: z.string().guid(),
     status: z.enum(["pending", "in_progress", "completed", "blocked"]),
   }).parse(d))
   .handler(async ({ data, context }) => {
@@ -93,9 +93,9 @@ export const updateTaskStatus = createServerFn({ method: "POST" })
 export const addTaskComment = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({
-    taskId: z.string().uuid(),
+    taskId: z.string().guid(),
     content: z.string().min(1).max(2000),
-    mentions: z.array(z.string().uuid()).max(20).optional(),
+    mentions: z.array(z.string().guid()).max(20).optional(),
   }).parse(d))
   .handler(async ({ data, context }) => {
     const { error } = await context.supabase.from("task_comments").insert({
@@ -137,7 +137,7 @@ export const addTaskComment = createServerFn({ method: "POST" })
 export const reportBlocker = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({
-    taskId: z.string().uuid(), reason: z.string().min(5).max(2000),
+    taskId: z.string().guid(), reason: z.string().min(5).max(2000),
   }).parse(d))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
@@ -177,7 +177,7 @@ export const reportBlocker = createServerFn({ method: "POST" })
 export const resolveBlocker = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({
-    blockerId: z.string().uuid(),
+    blockerId: z.string().guid(),
     resolutionNote: z.string().max(2000).optional().nullable(),
     resumeTask: z.boolean().optional(),
   }).parse(d))
@@ -210,8 +210,8 @@ export const resolveBlocker = createServerFn({ method: "POST" })
 export const reassignTask = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({
-    taskId: z.string().uuid(),
-    assigneeId: z.string().uuid(),
+    taskId: z.string().guid(),
+    assigneeId: z.string().guid(),
     deadline: z.string().optional(),
   }).parse(d))
   .handler(async ({ data, context }) => {

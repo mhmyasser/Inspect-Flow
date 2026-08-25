@@ -41,7 +41,7 @@ export const createEmployee = createServerFn({ method: "POST" })
   });
 
 const UpdateEmployeeSchema = z.object({
-  id: z.string().uuid(),
+  id: z.string().guid(),
   fullName: z.string().min(1).max(100),
   email: z.string().email().max(255),
   phone: z.string().max(30).optional().nullable(),
@@ -77,7 +77,7 @@ export const updateEmployee = createServerFn({ method: "POST" })
 
 export const resetEmployeePassword = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ id: z.string().uuid(), newPassword: z.string().min(8).max(72) }).parse(d))
+  .inputValidator((d: unknown) => z.object({ id: z.string().guid(), newPassword: z.string().min(8).max(72) }).parse(d))
   .handler(async ({ data, context }) => {
     await ensureAdmin(context.supabase, context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -88,7 +88,7 @@ export const resetEmployeePassword = createServerFn({ method: "POST" })
 
 export const deleteEmployee = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) => z.object({ id: z.string().guid() }).parse(d))
   .handler(async ({ data, context }) => {
     await ensureAdmin(context.supabase, context.userId);
     if (data.id === context.userId) throw new Error("لا يمكنك حذف حسابك");
