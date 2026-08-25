@@ -76,7 +76,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "إدارة المشاريع التجارية" },
+      { title: "إدارة المشاريع التجارية — منصة المناقصات وإسناد المهام" },
       { name: "description", content: "نظام متكامل لإدارة المشاريع التجارية والمناقصات وإسناد المهام وتنبيهات الموظفين" },
       { property: "og:title", content: "إدارة المشاريع التجارية" },
       { name: "twitter:title", content: "إدارة المشاريع التجارية" },
