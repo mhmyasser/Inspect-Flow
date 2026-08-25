@@ -2,16 +2,22 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
 
+const optionalUuid = z
+  .string()
+  .optional()
+  .nullable()
+  .transform((v) => (v && z.string().uuid().safeParse(v).success ? v : null));
+
 const CreateProjectSchema = z.object({
   name: z.string().min(1).max(200),
   description: z.string().max(2000).optional().nullable(),
   clientName: z.string().max(200).optional().nullable(),
   customerName: z.string().max(200).optional().nullable(),
-  customerId: z.string().uuid().optional().nullable(),
+  customerId: optionalUuid,
   supplierName: z.string().max(200).optional().nullable(),
-  supplierId: z.string().uuid().optional().nullable(),
+  supplierId: optionalUuid,
   projectType: z.enum(["tender", "direct"]),
-  templateId: z.string().uuid().optional().nullable(),
+  templateId: optionalUuid,
   startDate: z.string(),
   expectedEndDate: z.string().optional().nullable(),
 });
