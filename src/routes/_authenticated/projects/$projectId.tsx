@@ -669,7 +669,10 @@ function ApplyTemplateDialog({ projectId, projectType }: { projectId: string; pr
     },
   });
   const m = useMutation({
-    mutationFn: () => apply({ data: { projectId, templateId } }),
+    mutationFn: () => {
+      if (!templateId) throw new Error("يجب اختيار قالب أولاً");
+      return apply({ data: { projectId, templateId } });
+    },
     onSuccess: () => {
       toast.success("تم تطبيق القالب");
       qc.invalidateQueries({ queryKey: ["project-stages", projectId] });
