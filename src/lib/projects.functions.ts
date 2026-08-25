@@ -6,7 +6,7 @@ const optionalUuid = z
   .string()
   .optional()
   .nullable()
-  .transform((v) => (v && z.string().uuid().safeParse(v).success ? v : null));
+  .transform((v) => (v && z.string().guid().safeParse(v).success ? v : null));
 
 const CreateProjectSchema = z.object({
   name: z.string().min(1).max(200),
@@ -107,7 +107,7 @@ export const createProject = createServerFn({ method: "POST" })
 export const updateProject = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({
-    id: z.string().uuid(),
+    id: z.string().guid(),
     name: z.string().min(1).max(200),
     description: z.string().max(2000).optional().nullable(),
     clientName: z.string().max(200).optional().nullable(),
@@ -139,7 +139,7 @@ export const updateProject = createServerFn({ method: "POST" })
 export const updateStageStatus = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({
-    stageId: z.string().uuid(),
+    stageId: z.string().guid(),
     status: z.enum(["pending", "in_progress", "completed", "blocked"]),
   }).parse(d))
   .handler(async ({ data, context }) => {
@@ -161,7 +161,7 @@ export const updateStageStatus = createServerFn({ method: "POST" })
 export const addProjectStage = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({
-    projectId: z.string().uuid(),
+    projectId: z.string().guid(),
     name: z.string().min(1).max(200),
     description: z.string().max(2000).optional().nullable(),
     stageType: z.enum(["progress", "informational"]).default("progress"),
@@ -199,7 +199,7 @@ export const addProjectStage = createServerFn({ method: "POST" })
 
 export const deleteProjectStage = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ stageId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) => z.object({ stageId: z.string().guid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { data: __adminRow } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "admin").maybeSingle(); const isAdmin = !!__adminRow;
     if (!isAdmin) throw new Error("صلاحيات غير كافية");
@@ -222,8 +222,8 @@ export const applyTemplateToProject = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => {
     const parsed = z.object({
-      projectId: z.string().uuid(),
-      templateId: z.string().uuid(),
+      projectId: z.string().guid(),
+      templateId: z.string().guid(),
     }).safeParse(d);
     if (!parsed.success) throw new Error("يجب اختيار قالب صحيح قبل التطبيق");
     return parsed.data;
@@ -273,7 +273,7 @@ export const applyTemplateToProject = createServerFn({ method: "POST" })
 
 export const deleteProject = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ projectId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) => z.object({ projectId: z.string().guid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { data: __adminRow } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "admin").maybeSingle(); const isAdmin = !!__adminRow;
     if (!isAdmin) throw new Error("صلاحيات غير كافية");
