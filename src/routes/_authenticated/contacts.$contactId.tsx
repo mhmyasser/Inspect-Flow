@@ -28,6 +28,13 @@ export const Route = createFileRoute("/_authenticated/contacts/$contactId")({
 
 type TxnKind = "invoice" | "payment" | "receipt" | "credit" | "debit" | "other";
 
+export const DEFAULT_CURRENCY = "EGP";
+
+export const CURRENCY_LABEL: Record<string, string> = {
+  EGP: "ج.م",
+  USD: "$",
+};
+
 const TXN_LABEL: Record<TxnKind, string> = {
   invoice: "فاتورة",
   payment: "دفعة صادرة",
@@ -188,7 +195,7 @@ function ContactDetailPage() {
         <Card><CardContent className="pt-6">
           <div className="text-xs text-muted-foreground">الرصيد</div>
           <div className={`text-2xl font-bold mt-1 ${balance > 0 ? "text-success" : balance < 0 ? "text-destructive" : ""}`}>
-            {balance.toLocaleString("ar-EG", { minimumFractionDigits: 2 })} {txns[0]?.currency ?? "SAR"}
+            {balance.toLocaleString("ar-EG", { minimumFractionDigits: 2 })} {CURRENCY_LABEL[txns[0]?.currency ?? "EGP"] ?? txns[0]?.currency ?? "ج.م"}
           </div>
           <div className="text-xs text-muted-foreground mt-1">
             {contact.kind === "customer" ? "موجب = مستحق لنا" : "سالب = مستحق عليهم"}
@@ -255,7 +262,7 @@ function TransactionsCard({
   const [open, setOpen] = useState(false);
   const [kind, setKind] = useState<TxnKind>("invoice");
   const [amount, setAmount] = useState("");
-  const [currency, setCurrency] = useState("SAR");
+  const [currency, setCurrency] = useState(DEFAULT_CURRENCY);
   const [occurredOn, setOccurredOn] = useState(new Date().toISOString().slice(0, 10));
   const [projectId, setProjectId] = useState<string>("none");
   const [description, setDescription] = useState("");
@@ -312,7 +319,16 @@ function TransactionsCard({
                 </div>
                 <div><Label>التاريخ</Label><Input type="date" value={occurredOn} onChange={(e) => setOccurredOn(e.target.value)} required /></div>
                 <div><Label>المبلغ</Label><Input type="number" step="0.01" min="0" value={amount} onChange={(e) => setAmount(e.target.value)} required /></div>
-                <div><Label>العملة</Label><Input value={currency} onChange={(e) => setCurrency(e.target.value)} maxLength={10} /></div>
+                <div>
+                  <Label>العملة</Label>
+                  <Select value={currency} onValueChange={setCurrency}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="EGP">جنيه مصري (ج.م)</SelectItem>
+                      <SelectItem value="USD">دولار أمريكي ($)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                 <div className="col-span-2">
                   <Label>المشروع (اختياري)</Label>
                   <Select value={projectId} onValueChange={setProjectId}>
