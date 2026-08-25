@@ -319,7 +319,16 @@ function TransactionsCard({
                 </div>
                 <div><Label>التاريخ</Label><Input type="date" value={occurredOn} onChange={(e) => setOccurredOn(e.target.value)} required /></div>
                 <div><Label>المبلغ</Label><Input type="number" step="0.01" min="0" value={amount} onChange={(e) => setAmount(e.target.value)} required /></div>
-                <div><Label>العملة</Label><Input value={currency} onChange={(e) => setCurrency(e.target.value)} maxLength={10} /></div>
+                <div>
+                  <Label>العملة</Label>
+                  <Select value={currency} onValueChange={setCurrency}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="EGP">جنيه مصري (ج.م)</SelectItem>
+                      <SelectItem value="USD">دولار أمريكي ($)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                 <div className="col-span-2">
                   <Label>المشروع (اختياري)</Label>
                   <Select value={projectId} onValueChange={setProjectId}>
