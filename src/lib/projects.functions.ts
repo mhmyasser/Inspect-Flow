@@ -220,10 +220,14 @@ export const deleteProjectStage = createServerFn({ method: "POST" })
 
 export const applyTemplateToProject = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({
-    projectId: z.string().uuid(),
-    templateId: z.string().uuid(),
-  }).parse(d))
+  .inputValidator((d: unknown) => {
+    const parsed = z.object({
+      projectId: z.string().uuid(),
+      templateId: z.string().uuid(),
+    }).safeParse(d);
+    if (!parsed.success) throw new Error("يجب اختيار قالب صحيح قبل التطبيق");
+    return parsed.data;
+  })
   .handler(async ({ data, context }) => {
     const { data: __adminRow } = await context.supabase.from("user_roles").select("role").eq("user_id", context.userId).eq("role", "admin").maybeSingle(); const isAdmin = !!__adminRow;
     if (!isAdmin) throw new Error("صلاحيات غير كافية");
