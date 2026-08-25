@@ -9,41 +9,40 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as McpRouteImport } from './routes/mcp'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthenticatedWebhooksRouteImport } from './routes/_authenticated/webhooks'
-import { Route as AuthenticatedTemplatesRouteImport } from './routes/_authenticated/templates'
-import { Route as AuthenticatedSuppliersRouteImport } from './routes/_authenticated/suppliers'
-import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
-import { Route as AuthenticatedMyTasksRouteImport } from './routes/_authenticated/my-tasks'
-import { Route as AuthenticatedEmployeesRouteImport } from './routes/_authenticated/employees'
-import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
-import { Route as AuthenticatedCustomersRouteImport } from './routes/_authenticated/customers'
-import { Route as AuthenticatedAiAssistantRouteImport } from './routes/_authenticated/ai-assistant'
-import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as McpRouteImport } from './routes/mcp'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
-import { Route as AuthenticatedProjectsIndexRouteImport } from './routes/_authenticated/projects/index'
-import { Route as AuthenticatedTasksTaskIdRouteImport } from './routes/_authenticated/tasks/$taskId'
-import { Route as AuthenticatedProjectsNewRouteImport } from './routes/_authenticated/projects/new'
-import { Route as AuthenticatedProjectsProjectIdRouteImport } from './routes/_authenticated/projects/$projectId'
-import { Route as AuthenticatedContactsContactIdRouteImport } from './routes/_authenticated/contacts.$contactId'
-import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as AuthenticatedAiAssistantRouteImport } from './routes/_authenticated/ai-assistant'
+import { Route as AuthenticatedCustomersRouteImport } from './routes/_authenticated/customers'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedEmployeesRouteImport } from './routes/_authenticated/employees'
+import { Route as AuthenticatedMyTasksRouteImport } from './routes/_authenticated/my-tasks'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedSuppliersRouteImport } from './routes/_authenticated/suppliers'
+import { Route as AuthenticatedTemplatesRouteImport } from './routes/_authenticated/templates'
+import { Route as AuthenticatedWebhooksRouteImport } from './routes/_authenticated/webhooks'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
-import { Route as ApiPublicSetupBootstrapAdminRouteImport } from './routes/api/public/setup/bootstrap-admin'
-import { Route as ApiPublicSetupAdminExistsRouteImport } from './routes/api/public/setup/admin-exists'
+import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
+import { Route as AuthenticatedContactsContactIdRouteImport } from './routes/_authenticated/contacts.$contactId'
+import { Route as AuthenticatedProjectsIndexRouteImport } from './routes/_authenticated/projects/index'
+import { Route as AuthenticatedProjectsProjectIdRouteImport } from './routes/_authenticated/projects/$projectId'
+import { Route as AuthenticatedProjectsNewRouteImport } from './routes/_authenticated/projects/new'
+import { Route as AuthenticatedTasksTaskIdRouteImport } from './routes/_authenticated/tasks/$taskId'
 import { Route as ApiPublicNotificationsDispatchRouteImport } from './routes/api/public/notifications/dispatch'
+import { Route as ApiPublicSetupAdminExistsRouteImport } from './routes/api/public/setup/admin-exists'
+import { Route as ApiPublicSetupBootstrapAdminRouteImport } from './routes/api/public/setup/bootstrap-admin'
 
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const McpRoute = McpRouteImport.update({
-  id: '/mcp',
-  path: '/mcp',
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -51,60 +50,21 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedWebhooksRoute = AuthenticatedWebhooksRouteImport.update({
-  id: '/webhooks',
-  path: '/webhooks',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedTemplatesRoute = AuthenticatedTemplatesRouteImport.update({
-  id: '/templates',
-  path: '/templates',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedSuppliersRoute = AuthenticatedSuppliersRouteImport.update({
-  id: '/suppliers',
-  path: '/suppliers',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedMyTasksRoute = AuthenticatedMyTasksRouteImport.update({
-  id: '/my-tasks',
-  path: '/my-tasks',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedEmployeesRoute = AuthenticatedEmployeesRouteImport.update({
-  id: '/employees',
-  path: '/employees',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedCustomersRoute = AuthenticatedCustomersRouteImport.update({
-  id: '/customers',
-  path: '/customers',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedAiAssistantRoute =
-  AuthenticatedAiAssistantRouteImport.update({
-    id: '/ai-assistant',
-    path: '/ai-assistant',
-    getParentRoute: () => AuthenticatedRouteRoute,
+const Char91DotmcpChar93ListToolsRoute =
+  Char91DotmcpChar93ListToolsRouteImport.update({
+    id: '/.mcp/list-tools',
+    path: '/.mcp/list-tools',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const Char91DotwellKnownChar93OauthProtectedResourceRoute =
   Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
@@ -112,28 +72,73 @@ const Char91DotwellKnownChar93OauthProtectedResourceRoute =
     path: '/.well-known/oauth-protected-resource',
     getParentRoute: () => rootRouteImport,
   } as any)
-const Char91DotmcpChar93ListToolsRoute =
-  Char91DotmcpChar93ListToolsRouteImport.update({
-    id: '/.mcp/list-tools',
-    path: '/.mcp/list-tools',
+const AuthenticatedAiAssistantRoute =
+  AuthenticatedAiAssistantRouteImport.update({
+    id: '/ai-assistant',
+    path: '/ai-assistant',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedCustomersRoute = AuthenticatedCustomersRouteImport.update({
+  id: '/customers',
+  path: '/customers',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedEmployeesRoute = AuthenticatedEmployeesRouteImport.update({
+  id: '/employees',
+  path: '/employees',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedMyTasksRoute = AuthenticatedMyTasksRouteImport.update({
+  id: '/my-tasks',
+  path: '/my-tasks',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSuppliersRoute = AuthenticatedSuppliersRouteImport.update({
+  id: '/suppliers',
+  path: '/suppliers',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedTemplatesRoute = AuthenticatedTemplatesRouteImport.update({
+  id: '/templates',
+  path: '/templates',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedWebhooksRoute = AuthenticatedWebhooksRouteImport.update({
+  id: '/webhooks',
+  path: '/webhooks',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Char91DotmcpChar93InvokeToolToolRoute =
+  Char91DotmcpChar93InvokeToolToolRouteImport.update({
+    id: '/.mcp/invoke-tool/$tool',
+    path: '/.mcp/invoke-tool/$tool',
     getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthenticatedContactsContactIdRoute =
+  AuthenticatedContactsContactIdRouteImport.update({
+    id: '/contacts/$contactId',
+    path: '/contacts/$contactId',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedProjectsIndexRoute =
   AuthenticatedProjectsIndexRouteImport.update({
     id: '/projects/',
     path: '/projects/',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedTasksTaskIdRoute =
-  AuthenticatedTasksTaskIdRouteImport.update({
-    id: '/tasks/$taskId',
-    path: '/tasks/$taskId',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedProjectsNewRoute =
-  AuthenticatedProjectsNewRouteImport.update({
-    id: '/projects/new',
-    path: '/projects/new',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedProjectsProjectIdRoute =
@@ -142,27 +147,22 @@ const AuthenticatedProjectsProjectIdRoute =
     path: '/projects/$projectId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const AuthenticatedContactsContactIdRoute =
-  AuthenticatedContactsContactIdRouteImport.update({
-    id: '/contacts/$contactId',
-    path: '/contacts/$contactId',
+const AuthenticatedProjectsNewRoute =
+  AuthenticatedProjectsNewRouteImport.update({
+    id: '/projects/new',
+    path: '/projects/new',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const Char91DotmcpChar93InvokeToolToolRoute =
-  Char91DotmcpChar93InvokeToolToolRouteImport.update({
-    id: '/.mcp/invoke-tool/$tool',
-    path: '/.mcp/invoke-tool/$tool',
-    getParentRoute: () => rootRouteImport,
+const AuthenticatedTasksTaskIdRoute =
+  AuthenticatedTasksTaskIdRouteImport.update({
+    id: '/tasks/$taskId',
+    path: '/tasks/$taskId',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
-  id: '/.lovable/oauth/consent',
-  path: '/.lovable/oauth/consent',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicSetupBootstrapAdminRoute =
-  ApiPublicSetupBootstrapAdminRouteImport.update({
-    id: '/api/public/setup/bootstrap-admin',
-    path: '/api/public/setup/bootstrap-admin',
+const ApiPublicNotificationsDispatchRoute =
+  ApiPublicNotificationsDispatchRouteImport.update({
+    id: '/api/public/notifications/dispatch',
+    path: '/api/public/notifications/dispatch',
     getParentRoute: () => rootRouteImport,
   } as any)
 const ApiPublicSetupAdminExistsRoute =
@@ -171,10 +171,10 @@ const ApiPublicSetupAdminExistsRoute =
     path: '/api/public/setup/admin-exists',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiPublicNotificationsDispatchRoute =
-  ApiPublicNotificationsDispatchRouteImport.update({
-    id: '/api/public/notifications/dispatch',
-    path: '/api/public/notifications/dispatch',
+const ApiPublicSetupBootstrapAdminRoute =
+  ApiPublicSetupBootstrapAdminRouteImport.update({
+    id: '/api/public/setup/bootstrap-admin',
+    path: '/api/public/setup/bootstrap-admin',
     getParentRoute: () => rootRouteImport,
   } as any)
 
@@ -363,25 +363,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mcp': {
-      id: '/mcp'
-      path: '/mcp'
-      fullPath: '/mcp'
-      preLoaderRoute: typeof McpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -391,81 +377,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/webhooks': {
-      id: '/_authenticated/webhooks'
-      path: '/webhooks'
-      fullPath: '/webhooks'
-      preLoaderRoute: typeof AuthenticatedWebhooksRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/templates': {
-      id: '/_authenticated/templates'
-      path: '/templates'
-      fullPath: '/templates'
-      preLoaderRoute: typeof AuthenticatedTemplatesRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/suppliers': {
-      id: '/_authenticated/suppliers'
-      path: '/suppliers'
-      fullPath: '/suppliers'
-      preLoaderRoute: typeof AuthenticatedSuppliersRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/settings': {
-      id: '/_authenticated/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/my-tasks': {
-      id: '/_authenticated/my-tasks'
-      path: '/my-tasks'
-      fullPath: '/my-tasks'
-      preLoaderRoute: typeof AuthenticatedMyTasksRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/employees': {
-      id: '/_authenticated/employees'
-      path: '/employees'
-      fullPath: '/employees'
-      preLoaderRoute: typeof AuthenticatedEmployeesRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/dashboard': {
-      id: '/_authenticated/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/customers': {
-      id: '/_authenticated/customers'
-      path: '/customers'
-      fullPath: '/customers'
-      preLoaderRoute: typeof AuthenticatedCustomersRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/ai-assistant': {
-      id: '/_authenticated/ai-assistant'
-      path: '/ai-assistant'
-      fullPath: '/ai-assistant'
-      preLoaderRoute: typeof AuthenticatedAiAssistantRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/.well-known/oauth-protected-resource': {
-      id: '/.well-known/oauth-protected-resource'
-      path: '/.well-known/oauth-protected-resource'
-      fullPath: '/.well-known/oauth-protected-resource'
-      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/.mcp/list-tools': {
@@ -475,25 +405,102 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/ai-assistant': {
+      id: '/_authenticated/ai-assistant'
+      path: '/ai-assistant'
+      fullPath: '/ai-assistant'
+      preLoaderRoute: typeof AuthenticatedAiAssistantRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/customers': {
+      id: '/_authenticated/customers'
+      path: '/customers'
+      fullPath: '/customers'
+      preLoaderRoute: typeof AuthenticatedCustomersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/employees': {
+      id: '/_authenticated/employees'
+      path: '/employees'
+      fullPath: '/employees'
+      preLoaderRoute: typeof AuthenticatedEmployeesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/my-tasks': {
+      id: '/_authenticated/my-tasks'
+      path: '/my-tasks'
+      fullPath: '/my-tasks'
+      preLoaderRoute: typeof AuthenticatedMyTasksRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/suppliers': {
+      id: '/_authenticated/suppliers'
+      path: '/suppliers'
+      fullPath: '/suppliers'
+      preLoaderRoute: typeof AuthenticatedSuppliersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/templates': {
+      id: '/_authenticated/templates'
+      path: '/templates'
+      fullPath: '/templates'
+      preLoaderRoute: typeof AuthenticatedTemplatesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/webhooks': {
+      id: '/_authenticated/webhooks'
+      path: '/webhooks'
+      fullPath: '/webhooks'
+      preLoaderRoute: typeof AuthenticatedWebhooksRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/invoke-tool/$tool': {
+      id: '/.mcp/invoke-tool/$tool'
+      path: '/.mcp/invoke-tool/$tool'
+      fullPath: '/.mcp/invoke-tool/$tool'
+      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/contacts/$contactId': {
+      id: '/_authenticated/contacts/$contactId'
+      path: '/contacts/$contactId'
+      fullPath: '/contacts/$contactId'
+      preLoaderRoute: typeof AuthenticatedContactsContactIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/projects/': {
       id: '/_authenticated/projects/'
       path: '/projects'
       fullPath: '/projects/'
       preLoaderRoute: typeof AuthenticatedProjectsIndexRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/tasks/$taskId': {
-      id: '/_authenticated/tasks/$taskId'
-      path: '/tasks/$taskId'
-      fullPath: '/tasks/$taskId'
-      preLoaderRoute: typeof AuthenticatedTasksTaskIdRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/projects/new': {
-      id: '/_authenticated/projects/new'
-      path: '/projects/new'
-      fullPath: '/projects/new'
-      preLoaderRoute: typeof AuthenticatedProjectsNewRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/projects/$projectId': {
@@ -503,32 +510,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProjectsProjectIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/contacts/$contactId': {
-      id: '/_authenticated/contacts/$contactId'
-      path: '/contacts/$contactId'
-      fullPath: '/contacts/$contactId'
-      preLoaderRoute: typeof AuthenticatedContactsContactIdRouteImport
+    '/_authenticated/projects/new': {
+      id: '/_authenticated/projects/new'
+      path: '/projects/new'
+      fullPath: '/projects/new'
+      preLoaderRoute: typeof AuthenticatedProjectsNewRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/.mcp/invoke-tool/$tool': {
-      id: '/.mcp/invoke-tool/$tool'
-      path: '/.mcp/invoke-tool/$tool'
-      fullPath: '/.mcp/invoke-tool/$tool'
-      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
-      parentRoute: typeof rootRouteImport
+    '/_authenticated/tasks/$taskId': {
+      id: '/_authenticated/tasks/$taskId'
+      path: '/tasks/$taskId'
+      fullPath: '/tasks/$taskId'
+      preLoaderRoute: typeof AuthenticatedTasksTaskIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/.lovable/oauth/consent': {
-      id: '/.lovable/oauth/consent'
-      path: '/.lovable/oauth/consent'
-      fullPath: '/.lovable/oauth/consent'
-      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/setup/bootstrap-admin': {
-      id: '/api/public/setup/bootstrap-admin'
-      path: '/api/public/setup/bootstrap-admin'
-      fullPath: '/api/public/setup/bootstrap-admin'
-      preLoaderRoute: typeof ApiPublicSetupBootstrapAdminRouteImport
+    '/api/public/notifications/dispatch': {
+      id: '/api/public/notifications/dispatch'
+      path: '/api/public/notifications/dispatch'
+      fullPath: '/api/public/notifications/dispatch'
+      preLoaderRoute: typeof ApiPublicNotificationsDispatchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/setup/admin-exists': {
@@ -538,11 +538,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicSetupAdminExistsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/notifications/dispatch': {
-      id: '/api/public/notifications/dispatch'
-      path: '/api/public/notifications/dispatch'
-      fullPath: '/api/public/notifications/dispatch'
-      preLoaderRoute: typeof ApiPublicNotificationsDispatchRouteImport
+    '/api/public/setup/bootstrap-admin': {
+      id: '/api/public/setup/bootstrap-admin'
+      path: '/api/public/setup/bootstrap-admin'
+      fullPath: '/api/public/setup/bootstrap-admin'
+      preLoaderRoute: typeof ApiPublicSetupBootstrapAdminRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
