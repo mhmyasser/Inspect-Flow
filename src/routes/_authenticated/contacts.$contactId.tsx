@@ -188,7 +188,7 @@ function ContactDetailPage() {
         <Card><CardContent className="pt-6">
           <div className="text-xs text-muted-foreground">الرصيد</div>
           <div className={`text-2xl font-bold mt-1 ${balance > 0 ? "text-success" : balance < 0 ? "text-destructive" : ""}`}>
-            {balance.toLocaleString("ar-EG", { minimumFractionDigits: 2 })} {txns[0]?.currency ?? "SAR"}
+            {balance.toLocaleString("ar-EG", { minimumFractionDigits: 2 })} {CURRENCY_LABEL[txns[0]?.currency ?? "EGP"] ?? txns[0]?.currency ?? "ج.م"}
           </div>
           <div className="text-xs text-muted-foreground mt-1">
             {contact.kind === "customer" ? "موجب = مستحق لنا" : "سالب = مستحق عليهم"}
