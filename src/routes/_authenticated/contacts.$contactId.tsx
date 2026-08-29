@@ -361,7 +361,7 @@ function TransactionsCard({
                 <div key={t.id} className="py-3 flex items-center gap-3 flex-wrap">
                   <Badge variant="outline">{TXN_LABEL[t.kind as TxnKind] ?? t.kind}</Badge>
                   <div className="text-sm">{new Date(t.occurred_on).toLocaleDateString("ar-EG")}</div>
-                  <div className="font-medium">{Number(t.amount).toLocaleString("ar-EG", { minimumFractionDigits: 2 })} {t.currency}</div>
+                  <div className="font-medium">{Number(t.amount).toLocaleString("ar-EG", { minimumFractionDigits: 2 })} {CURRENCY_LABEL[t.currency] ?? t.currency}</div>
                   {projName && <Badge variant="secondary" className="text-xs">{projName}</Badge>}
                   {t.description && <div className="text-xs text-muted-foreground flex-1 min-w-[200px]">{t.description}</div>}
                   <Button variant="ghost" size="sm" onClick={() => { if (confirm("حذف المعاملة؟")) del.mutate(t.id); }}>
