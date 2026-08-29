@@ -25,7 +25,7 @@ import { useAuth } from "@/hooks/use-auth";
 
 import { useEffect } from "react";
 
-export const Route = createFileRoute("/_authenticated/employees")({
+export const Route = createFileRoute("/_authenticated/employees/")({
   head: () => ({
     meta: [
       { title: "إدارة الموظفين — إدارة المشاريع التجارية" },
