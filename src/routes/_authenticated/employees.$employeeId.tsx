@@ -169,9 +169,7 @@ function Kpi({ icon: Icon, label, value, danger }: { icon: any; label: string; v
   );
 }
 
-type Row = ReturnType<typeof Object> extends never ? never : any;
-
-function TaskTable({ rows }: { rows: Row[] }) {
+function TaskTable({ rows }: { rows: any[] }) {
   if (!rows.length) {
     return (
       <Card><CardContent className="p-6 text-center text-muted-foreground text-sm">لا توجد مهام</CardContent></Card>
