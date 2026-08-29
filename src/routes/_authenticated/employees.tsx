@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
@@ -115,7 +115,13 @@ function EmployeesPage() {
                 <div key={emp.id} className="flex flex-wrap items-center gap-3 p-4">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-medium">{emp.full_name}</span>
+                      <Link
+                        to="/employees/$employeeId"
+                        params={{ employeeId: emp.id }}
+                        className="font-medium hover:underline"
+                      >
+                        {emp.full_name}
+                      </Link>
                       <Badge variant={emp.role === "admin" ? "default" : "secondary"}>
                         {emp.role === "admin" ? "مدير" : "موظف"}
                       </Badge>
