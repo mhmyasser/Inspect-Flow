@@ -23,6 +23,19 @@ import { CheckCircle2, Circle, Clock, AlertCircle, Plus, ArrowLeft, Loader2, Use
 
 
 export const Route = createFileRoute("/_authenticated/projects/$projectId")({
+  head: ({ params }) => ({
+    meta: [
+      { title: "تفاصيل المشروع — إدارة المشاريع التجارية" },
+      { name: "description", content: "تفاصيل المشروع: المراحل، المهام المسندة، العوائق، ونسبة الإنجاز." },
+      { name: "robots", content: "noindex" },
+      { property: "og:title", content: "تفاصيل المشروع — إدارة المشاريع التجارية" },
+      { property: "og:description", content: "تفاصيل المشروع: المراحل، المهام المسندة، العوائق، ونسبة الإنجاز." },
+      { property: "og:url", content: `https://inspect-flow-master.lovable.app/projects/${params.projectId}` },
+    ],
+    links: [
+      { rel: "canonical", href: `https://inspect-flow-master.lovable.app/projects/${params.projectId}` },
+    ],
+  }),
   component: ProjectDetailPage,
 });
 
