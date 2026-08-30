@@ -17,6 +17,19 @@ import { toast } from "sonner";
 import { ArrowLeft, AlertCircle, Loader2, Paperclip, Send, FileText, Image as ImageIcon, Eye, Download, CheckCircle2, ShieldAlert } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/tasks/$taskId")({
+  head: ({ params }) => ({
+    meta: [
+      { title: "تفاصيل المهمة — إدارة المشاريع التجارية" },
+      { name: "description", content: "تفاصيل المهمة: الحالة، الموعد النهائي، التعليقات، المرفقات، والعوائق." },
+      { name: "robots", content: "noindex" },
+      { property: "og:title", content: "تفاصيل المهمة — إدارة المشاريع التجارية" },
+      { property: "og:description", content: "تفاصيل المهمة: الحالة، الموعد النهائي، التعليقات، المرفقات، والعوائق." },
+      { property: "og:url", content: `https://inspect-flow-master.lovable.app/tasks/${params.taskId}` },
+    ],
+    links: [
+      { rel: "canonical", href: `https://inspect-flow-master.lovable.app/tasks/${params.taskId}` },
+    ],
+  }),
   component: TaskDetailPage,
 });
 
